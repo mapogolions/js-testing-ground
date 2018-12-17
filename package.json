@@ -1,0 +1,20 @@
+{
+  "name": "fp",
+  "version": "1.0.0",
+  "description": "Functional programming in javascript",
+  "main": "index.js",
+  "scripts": {
+    "test": "ava"
+  },
+  "keywords": [
+    "functional programming in javascript",
+    "persistent data structure",
+    "immutability",
+    "recursive processes"
+  ],
+  "author": "mapogolions",
+  "license": "ISC",
+  "devDependencies": {
+    "ava": "1.0.0-rc.2"
+  }
+}
