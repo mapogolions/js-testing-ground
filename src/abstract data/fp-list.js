@@ -24,7 +24,7 @@ const len = pair => {
 };
 
 const asArray = xs => {
-  const loop = (xs, values) => empty(xs) ? values : loop(cdr(xs), [...values, car(xs)]);
+  const loop = (xs, acc) => empty(xs) ? acc : loop(cdr(xs), [...acc, car(xs)]);
   return loop(xs, []);
 };
 
