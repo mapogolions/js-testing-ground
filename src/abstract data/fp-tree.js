@@ -1,36 +1,56 @@
 'use strict';
 
-const { cons, car, cdr } = require('./cons.js');
+const { cons, car, cdr, nil, isPair, empty, list } = require('./cons.js');
+const List = require('./fp-list.js');
 
-const isPair = xs => typeof xs === 'function';
-
-const nil = null;
-const empty = xs => Object.is(xs, nil);
-
-const list = (...values) => 
-  values.length == 0 ? nil : cons(values[0], list(...values.slice(1)));
-
-const array = xs => {
-  const loop = (acc, xs) => {
-    if (empty(xs)) return acc;
-    else if (isPair(car(xs))) return loop([...acc, array(car(xs))], cdr(xs));
-    else return loop([...acc, car(xs)], cdr(xs));
+const array = tree => {
+  const loop = (acc, tree) => {
+    if (empty(tree)) return acc;
+    else if (!isPair(car(tree))) return loop([...acc, car(tree)], cdr(tree));
+    else return loop([...acc, array(car(tree))], cdr(tree));
   };
-  return loop([], xs);
+  return loop([], tree);
 };
 
-const str = xs => {
-  const loop = (acc, xs) => {
-    if (empty(xs)) return `${acc.trim()})`;
-    else if (isPair(car(xs))) return loop(`${acc}${str(car(xs))} `, cdr(xs));
-    else return loop(`${acc}${car(xs)} `, cdr(xs));
+const str = tree => {
+  const loop = (acc, tree) => {
+    if (empty(tree)) return `${acc.trim()})`;
+    else if (!isPair(car(tree))) return loop(`${acc}${car(tree)} `, cdr(tree));
+    else return loop(`${acc}${str(car(tree))} `, cdr(tree));
   };
-  return loop('(', xs);
+  return loop('(', tree);
 };
 
-exports.list = list;
+const leaves = tree => {
+  if (empty(tree)) return 0;
+  else if (!isPair(car(tree))) return 1 + leaves(cdr(tree));
+  else return leaves(car(tree)) + leaves(cdr(tree));
+};
+
+/* const leaves = tree => {
+  const loop = (count, tree) => {
+    if (empty(tree)) return count;
+    else if (isPair(car(tree))) return loop(count + loop(0, car(tree)), cdr(tree));
+    else return loop(count + 1, cdr(tree));
+  };
+  return loop(0, tree);
+}; */
+
+
+const reverse = tree => {
+  const loop = (tree, acc) => {
+    if (empty(tree)) return acc;
+    else if (isPair(car(tree))) 
+      return loop(cdr(tree), List.append(list(reverse(car(tree))), acc));
+    else 
+      return loop(cdr(tree), List.append(list(car(tree)), acc));
+  };
+  return loop(tree, nil);
+};
+
+
+
 exports.array = array;
 exports.str = str;
-exports.cons = cons;
-exports.car = car;
-exports.cdr = cdr;
+exports.leaves = leaves;
+exports.reverse = reverse;

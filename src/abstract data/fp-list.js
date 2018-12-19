@@ -1,6 +1,6 @@
 'use strict';
 
-const { cons, car, cdr } = require('./cons.js');
+const { cons, car, cdr, list, empty, nil } = require('./cons.js');
 
 /**
  * Canonical definition persistent single linked list.
@@ -14,21 +14,18 @@ const { cons, car, cdr } = require('./cons.js');
  *        (cons 4 nil)))) or (another way)
  * (list 1 2 3 4)
  */
-const nil = null;
-const list = (...values) => values.length == 0 ? nil : cons(values[0], list(...values.slice(1)));
-const empty = xs => Object.is(xs, nil);
 
-const len = pair => {
+const length = pair => {
   const loop = (xs, count) => empty(xs) ? count : loop(cdr(xs), count + 1);
   return loop(pair, 0);
 };
 
-const asArray = xs => {
+const array = xs => {
   const loop = (xs, acc) => empty(xs) ? acc : loop(cdr(xs), [...acc, car(xs)]);
   return loop(xs, []);
 };
 
-const asString = xs => `list(${asArray(xs).join(' ')})`;
+const str = xs => `(${array(xs).join(' ')})`;
 
 const lastPair = xs => {
   if (empty(xs)) return xs;
@@ -87,15 +84,9 @@ const flatMap = (xs, f) => foldr(xs, nil, (h, t) => append(f(h), t));
 const filter = (xs, p) => flatMap(xs, _ => p(_) ? list(_) : list());
 const sameParity = xs => cons(car(xs), filter(cdr(xs), x => x % 2 === car(xs) % 2));
 
-exports.list = list;
-exports.cons = cons;
-exports.nil = nil;
-exports.car = car;
-exports.cdr = cdr;
-exports.len = len;
-exports.empty = empty;
-exports.asArray = asArray;
-exports.asString = asString;
+exports.length = length;
+exports.array = array;
+exports.str = str;
 exports.drop = drop;
 exports.dropWhile = dropWhile;
 exports.foldl = foldl;
