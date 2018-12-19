@@ -7,15 +7,29 @@ const { cons, car, cdr } = require('../../src/abstract data/cons.js');
 
 const { 
   list, nil, len, empty, asArray, asString, 
-  drop, dropWhile, foldLeft, foldRight, sum, product, append,
-  reverse, snapshot, map, flatMap, filter
+  drop, dropWhile, foldl, foldr, sum, product, append,
+  reverse, snapshot, map, flatMap, filter, lastPair, sameParity
 } = require('../../src/abstract data/fp-list.js');
 
 
+test("method sameParity", t => {
+  t.deepEqual(asArray(sameParity(list(1, 2, 3, 4, 5))), [1, 3, 5]);
+  t.deepEqual(asArray(sameParity(list(2, 3, 4, 5, 6))), [2, 4, 6]);
+});
+
+test("method `lastPair`", t => {
+  t.deepEqual(lastPair(list()), nil);
+  t.is(car(lastPair(list(1, 2, 3))), 3);
+  t.is(cdr(lastPair(list(1, 2, 3))), nil);
+  t.is(len(lastPair(list(1, 2, 3))), 1);
+  t.deepEqual(asArray(lastPair(list(1))), [1]);
+  t.deepEqual(asArray(lastPair(list(1, 2))), [2]);
+});
+
 test("method `filter`", t => {
   t.is(len(filter(list(0, 2, 3), _ => _ > 0)), 2);
-})
-;
+});
+
 test("method `flatMap", t => {
   t.is(car(flatMap(list(1, 2, 3), _ => list(_ + 10))), 11);
   t.is(car(flatMap(list(false, true, false), _ => list(_.toString()))), "false");
@@ -44,23 +58,23 @@ test("method `append`", t => {
   t.is(len(append(list(), nil)), 0);
 });
 
-test("method product", t => {
+test("method `product`", t => {
   t.is(product(cons(1, nil)), 1);
 });
 
-test("method sum", t => {
+test("method `sum`", t => {
   t.is(sum(list(1, 2, 3)), 6);
   t.is(sum(list(10, 20, -10)), 20);
 });
 
-test("method foldRight", t => {
-  t.is(foldRight(list(1, 2, 3), 0, (x, y) => x + y), 6);
-  t.is(foldLeft(list(1, 2, 3, 4), 1, (x, y) => x * y), 24);
+test("method `foldr`", t => {
+  t.is(foldr(list(1, 2, 3), 0, (x, y) => x + y), 6);
+  t.is(foldr(list(1, 2, 3, 4), 1, (x, y) => x * y), 24);
 });
 
-test("method foldLeft", t => {
-  t.is(foldLeft(list(1, 2, 3, 4), 1, (x, y) => x * y), 24);
-  t.is(foldLeft(list(100, 50, 20), 0, (x, y) => x + y), 170);
+test("method `foldl`", t => {
+  t.is(foldl(list(1, 2, 3, 4), 1, (x, y) => x * y), 24);
+  t.is(foldl(list(100, 50, 20), 0, (x, y) => x + y), 170);
 });
 
 test("method `dropWhile`", t => {
@@ -85,7 +99,7 @@ test("method `asArray`", t => {
   t.deepEqual([1, 2], asArray(cons(1, cons(2, nil))));
 });
 
-test("test method `len`", t => {
+test("test `len`", t => {
   t.is(len(list(1, 2, 3)), 3);
   t.is(len(cons(1, nil)), 1);
   t.is(len(cons(1, cons(2, nil))), 2);
@@ -93,7 +107,7 @@ test("test method `len`", t => {
   t.is(len(nil), 0);
 });
 
-test("test is empty", t => {
+test("test `empty`", t => {
   t.true(empty(list()));
   t.true(empty(nil));
   t.false(empty(list(1, 2)));
