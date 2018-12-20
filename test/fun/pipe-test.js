@@ -8,7 +8,7 @@ const { list, nil } = require('../../src/abstract data/cons.js');
 const List = require('../../src/abstract data/fp-list.js');
 
 
-test.only("test pipe", t => {
+test("test pipe", t => {
   t.is(
     pipe(list(1, 2, 3))
       ._(curry (List.map) (x => x + 1))

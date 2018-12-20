@@ -4,9 +4,28 @@ const test = require('ava');
 
 const { cons, car, cdr, list, nil, empty } = require('../../src/abstract data/cons.js');
 const List = require('../../src/abstract data/fp-list.js');
+const { pipe } = require('../../src/fun/pipe.js');
+const { curry } = require('../../src/fun/curry.js');
 
+test("method `List.zip`", t => {
+  t.deepEqual(
+    pipe(list(-1, -2, -3))
+      ._(curry (List.zip) ((x, y) => [x, y]) (list(1, 2, 3)))
+      ._(curry (List.array))
+      .value,
+    [[1, -1], [2, -2], [3, -3]]
+  );
 
-test("method List.sameParity", t => {
+  t.deepEqual(
+    pipe(list(1, 2, 3))
+      ._(curry (List.zip) ((x, y) => x + y) (list(1, 2, 3)))
+      ._(curry (List.array))
+      .value,
+    [2, 4, 6]
+  );
+});
+
+test("method `List.sameParity`", t => {
   t.deepEqual(List.array(List.sameParity(list(1, 2, 3, 4, 5))), [1, 3, 5]);
   t.deepEqual(List.array(List.sameParity(list(2, 3, 4, 5, 6))), [2, 4, 6]);
 });

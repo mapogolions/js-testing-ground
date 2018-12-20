@@ -8,7 +8,7 @@ function curry(f) {
       return f(...args);
     }
     return function f2(...args2) {
-      return f1(...[...args, ...args2]);
+      return f1(...args, ...args2);
     }
   };
 }

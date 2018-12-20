@@ -77,6 +77,11 @@ const append = (xs, ys) => {
   else return cons(car(xs), append(cdr(xs), ys));
 };
 
+const zip = (f, xs, ys) => {
+  if (empty(xs) || empty(ys)) return nil;
+  else return cons(f(car(xs), car(ys)), zip(f, cdr(xs), cdr(ys)));
+};
+
 const reverse = xs => foldl((t, h) => cons(h, t), nil, xs);
 const snapshot = xs => foldr((h, t) => cons(h, t), nil, xs);
 const map = (f, xs) => foldr((h, t) => cons(f(h), t), nil, xs);
@@ -91,6 +96,7 @@ exports.drop = drop;
 exports.dropWhile = dropWhile;
 exports.foldl = foldl;
 exports.foldr = foldr;
+exports.zip = zip;
 exports.sum = sum;
 exports.product = product;
 exports.append = append;
