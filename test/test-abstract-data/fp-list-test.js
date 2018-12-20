@@ -21,35 +21,71 @@ test("method `List.lastPair`", t => {
 });
 
 test("method `List.filter`", t => {
-  t.is(List.length(List.filter(list(0, 2, 3), _ => _ > 0)), 2);
+  t.is(List.str(List.filter(x => x > 0, list(0, 2, 3))), '(2 3)');
 });
 
 test("method `List.flatMap", t => {
-  t.is(car(List.flatMap(list(1, 2, 3), _ => list(_ + 10))), 11);
-  t.is(car(List.flatMap(list(false, true, false), _ => list(_.toString()))), "false");
+  t.is(
+    List.str(List.flatMap(x => list(x + 10), list(1, 2, 3))),
+    '(11 12 13)'
+  );
+  t.is(
+    List.str(List.flatMap(x => list(x.toString()), list(1, 2, 4))),
+    '(1 2 4)'
+  );
 });
 
 test("method `List.map`", t => {
-  t.is(car(List.map(list(1, 2, 3), _ => _ + 1)), 2);
-  t.is(car(List.map(list(-1, 2, 3), _ => _ > 0)), false);
+  t.is(
+    List.str(List.map(x => x + 1, list(1, 2, 3))),
+    '(2 3 4)'
+  );
+  t.is(
+    List.str(List.map(x => x > 0, list(-1, 2, 3))),
+    '(false true true)'
+  );
 });
 
 test("method `List.snapshot`", t => {
-  t.is(car(List.snapshot(list(1, 2))), 1);
+  t.is(
+    List.str(List.snapshot(list(1, 2))),
+    '(1 2)'
+  );
 });
 
 test("method `List.reverse`", t => {
-  t.is(car(List.reverse(list(1, 2, 3))), 3);
+  t.is(
+    List.str(List.reverse(list(1, 2, 3))),
+    '(3 2 1)'
+  );
   t.is(List.reverse(nil), nil);
-  t.is(car(List.reverse(cons(1, cons(2, nil)))), 2);
-  t.is(List.length(List.reverse(list('a', 'b', 'c'))), 3);
+  t.is(
+    List.str(List.reverse(cons(1, cons(2, nil)))),
+    '(2 1)'
+  );
+  t.is(
+    List.str(List.reverse(list('a', 'b', 'c'))), 
+    '(c b a)'
+  );
 });
 
 test("method `List.append`", t => {
-  t.is(List.length(List.append(list(1, 2, 3), list("a", "b", "c"))), 6);
-  t.is(List.length(List.append(list(), list(1))), 1);
-  t.is(List.length(List.append(nil, cons(1, cons(2, nil)))), 2);
-  t.is(List.length(List.append(list(), nil)), 0);
+  t.is(
+    List.str(List.append(list(1, 2, 3), list("a", "b", "c"))),
+    '(1 2 3 a b c)'
+  );
+  t.is(
+    List.str(List.append(list(), list(1))),
+    '(1)'
+  );
+  t.is(
+    List.str(List.append(nil, cons(1, cons(2, nil)))),
+    '(1 2)'
+  );
+  t.is(
+    List.str(List.append(list(), nil)),
+    '()'
+  );
 });
 
 test("method `List.product`", t => {
@@ -62,25 +98,28 @@ test("method `List.sum`", t => {
 });
 
 test("method `List.foldr`", t => {
-  t.is(List.foldr(list(1, 2, 3), 0, (x, y) => x + y), 6);
-  t.is(List.foldr(list(1, 2, 3, 4), 1, (x, y) => x * y), 24);
+  t.is(List.foldr((x, y) => x + y, 0, list(1, 2, 3)), 6);
+  t.is(List.foldr((x, y) => x * y, 1, list(1, 2, 3, 4)), 24);
 });
 
 test("method `List.foldl`", t => {
-  t.is(List.foldl(list(1, 2, 3, 4), 1, (x, y) => x * y), 24);
-  t.is(List.foldl(list(100, 50, 20), 0, (x, y) => x + y), 170);
+  t.is(List.foldl((x, y) => x * y, 1, list(1, 2, 3, 4)), 24);
+  t.is(List.foldl((x, y) => x + y, 0, list(100, 50, 20)), 170);
 });
 
 test("method `List.dropWhile`", t => {
-  t.is(List.length(List.dropWhile(list(-1, 0, 1, 2), _ => _ <= 0)), 2);
-  t.is(car(List.dropWhile(list(2, 4, 6, 8, 7), _ => _ % 2 === 0)), 7);
+  t.is(List.length(List.dropWhile(x => x <= 0, list(-1, 0, 1, 2))), 2);
+  t.is(
+    List.str(List.dropWhile(x => x % 2 === 0, list(2, 4, 6, 8, 7))),
+    '(7)'
+  );
 });
 
 test("method `List.drop", t => {
   t.is(List.length(List.drop(list(1, 2, 3), 1)), 2);
-  t.is(car(List.drop(list(1, 2, 3, 4), 2)), 3);
+  t.is(List.str(List.drop(list(1, 2, 3, 4), 2)), '(3 4)');
   t.is(List.drop(list()), nil);
-  t.is(List.drop(cons(1, nil), 1), nil);
+  t.is(List.str(List.drop(cons(1, nil), 1)), '()');
 });
 
 test("method `List.str`", t => {

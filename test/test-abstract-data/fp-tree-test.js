@@ -7,6 +7,34 @@ const Tree = require('../../src/abstract data/fp-tree.js');
 const List = require('../../src/abstract data/fp-list.js');
 
 
+test("Test `Tree.reverse`", t => {
+  t.deepEqual(
+    Tree.str(Tree.reverse(list(list(1, 2), list(3, 4)))),
+    '((4 3) (2 1))'
+  );
+
+  t.deepEqual(
+    Tree.str(List.reverse(list(list(1, 2), list(3, 4)))),
+    '((3 4) (1 2))'
+  );
+
+  t.deepEqual(
+    Tree.str(Tree.reverse(list(1, 2, 3, 4))),
+    List.str(Tree.reverse(list(1, 2, 3, 4)))
+  );
+});
+
+test("Test `Tree.flatten`", t => {
+  t.deepEqual(
+    Tree.str(Tree.flatten(list(1, 2, list(list(3)), 4))),
+    '(1 2 3 4)'
+  );
+  t.deepEqual(
+    Tree.str(Tree.flatten(list(list(1, 2), 3, list(list(4, 5), 6)))),
+    '(1 2 3 4 5 6)'
+  );
+});
+
 test("Test `List.append, cons, list`", t => {
   const x = list(1, 2, 3);
   const y = list(4, 5, 6);

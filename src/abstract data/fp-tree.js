@@ -48,9 +48,16 @@ const reverse = tree => {
   return loop(tree, nil);
 };
 
+// SICP - `fringe`
+const flatten = tree => {
+  if (empty(tree)) return tree;
+  else if (!isPair(car(tree))) return List.append(list(car(tree)), flatten(cdr(tree)));
+  else return List.append(flatten(car(tree)), flatten(cdr(tree)));
+};
 
 
 exports.array = array;
 exports.str = str;
 exports.leaves = leaves;
 exports.reverse = reverse;
+exports.flatten = flatten;

@@ -39,9 +39,9 @@ const drop = (xs, n = 0) => {
   else return drop(cdr(xs), n - 1);
 };
 
-const dropWhile = (xs, p) => {
+const dropWhile = (p, xs) => {
   if (empty(xs)) return xs;
-  else if (p(car(xs))) return dropWhile(cdr(xs), p);
+  else if (p(car(xs))) return dropWhile(p, cdr(xs));
   else return xs;
 };
 
@@ -50,11 +50,11 @@ const dropWhile = (xs, p) => {
  * foldl xs 0 + = ((((0 + 1) + 2) + 3) + 4)
  * foldl xs 1 * = ((((1 * 1) * 2) * 3) * 4)
  * 
- * foldl :: ['a] -> 'b -> ('b -> 'a -> 'b)
+ * foldl :: ('b -> 'a -> 'b) -> 'b -> ['a]
  */
-const foldl = (xs, acc, f) => {
+const foldl = (f, acc, xs) => {
   if (empty(xs)) return acc;
-  else return foldl(cdr(xs), f(acc, car(xs)), f);
+  else return foldl(f, f(acc, car(xs)), cdr(xs));
 };
 
 /**
@@ -62,27 +62,27 @@ const foldl = (xs, acc, f) => {
  * foldl xs 0 + = (1 + (2 + (3 + (4 + 0))))
  * foldl xs 1 * = (1 * (2 * (3 * (4 * 1))))
  * 
- * foldr :: ['a] -> 'b -> ('a -> 'b -> 'b)
+ * foldr :: ('a -> 'b -> 'b) -> 'b -> ['a]
  */
-const foldr = (xs, end, f) => {
+const foldr = (f, end, xs) => {
   if (empty(xs)) return end;
-  else return f(car(xs), foldr(cdr(xs), end, f));
+  else return f(car(xs), foldr(f, end, cdr(xs)));
 };
 
-const sum = xs => foldl(xs, 0, (x, y) => x + y);
-const product = xs => foldl(xs, 1, (x, y) => x * y);
+const sum = xs => foldl((x, y) => x + y, 0, xs);
+const product = xs => foldl((x, y) => x * y, 1, xs);
 
 const append = (xs, ys) => {
   if (empty(xs)) return ys;
   else return cons(car(xs), append(cdr(xs), ys));
 };
 
-const reverse = xs => foldl(xs, nil, (t, h) => cons(h, t));
-const snapshot = xs => foldr(xs, nil, (h, t) => cons(h, t));
-const map = (xs, f) => foldr(xs, nil, (h, t) => cons(f(h), t));
-const flatMap = (xs, f) => foldr(xs, nil, (h, t) => append(f(h), t));
-const filter = (xs, p) => flatMap(xs, _ => p(_) ? list(_) : list());
-const sameParity = xs => cons(car(xs), filter(cdr(xs), x => x % 2 === car(xs) % 2));
+const reverse = xs => foldl((t, h) => cons(h, t), nil, xs);
+const snapshot = xs => foldr((h, t) => cons(h, t), nil, xs);
+const map = (f, xs) => foldr((h, t) => cons(f(h), t), nil, xs);
+const flatMap = (f, xs) => foldr((h, t) => append(f(h), t), nil, xs);
+const filter = (p, xs) => flatMap(_ => p(_) ? list(_) : list(), xs);
+const sameParity = xs => cons(car(xs), filter(x => x % 2 === car(xs) % 2, cdr(xs)));
 
 exports.length = length;
 exports.array = array;
