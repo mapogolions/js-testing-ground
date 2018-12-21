@@ -9,6 +9,46 @@ const { pipe } = require('../../src/fun/pipe.js');
 const { curry } = require('../../src/fun/curry.js');
 
 
+test("Test `Tree.foldr`", t => {
+  t.is(
+    pipe(list(list(1), 2, list(3, list(list(4), 5))))
+      ._(Tree.flatten)
+      ._(curry (List.foldr) ((x, y) => x * y) (1))
+      .value,      
+    List.foldr((x, y) => x * y, 1, list(1, 2, 3, 4, 5))
+  );
+
+  t.is(
+    Tree.foldr((x, y) => x * y, 1, list(list(1), 2, list(3, list(list(4), 5)))),
+    List.foldr((x, y) => x * y, 1, list(1, 2, 3, 4, 5))
+  );
+
+  t.is(
+    Tree.foldr((x, y) => x * y, 1, list(list(1), 2, list(3, list(list(4), 5)))),
+    [1, 2, 3, 4, 5].reduce((x, y) => x * y)
+  );
+});
+
+test("Test `Tree.foldl`", t => {
+  t.is(
+    pipe(list(list(1), 2, list(3, list(list(4), 5))))
+      ._(Tree.flatten)
+      ._(curry (List.foldl) ((x, y) => x + y) (0))
+      .value,      
+    List.foldl((x, y) => x + y, 0, list(1, 2, 3, 4, 5))
+  );
+
+  t.is(
+    Tree.foldl((x, y) => x + y, 0, list(list(1), 2, list(3, list(list(4), 5)))),
+    List.foldl((x, y) => x + y, 0, list(1, 2, 3, 4, 5))
+  );
+
+  t.is(
+    Tree.foldl((x, y) => x + y, 0, list(list(1), 2, list(3, list(list(4), 5)))),
+    [1, 2, 3, 4, 5].reduce((x, y) => x + y)
+  );
+});
+
 test("Test `Tree.map`", t => {
   const square = x => x * x;
   t.deepEqual(

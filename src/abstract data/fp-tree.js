@@ -48,7 +48,7 @@ const reverse = tree => {
   return loop(tree, nil);
 };
 
-// SICP - `fringe`
+// SICP - `fringe` and `enumerate`
 const flatten = tree => {
   if (empty(tree)) return tree;
   else if (!isPair(car(tree))) return List.append(list(car(tree)), flatten(cdr(tree)));
@@ -60,18 +60,6 @@ const scale = (n, tree) => {
   else if (!isPair(car(tree))) return cons(n * car(tree), scale(n, cdr(tree)));
   else return cons(scale(n, car(tree)), scale(n, cdr(tree)));
 };
-
-// Versions of `square`
-const square3 = tree => {
-  if (empty(tree)) return tree;
-  else if (!isPair(car(tree))) return cons(car(tree) * car(tree), square3(cdr(tree)));
-  else return cons(square3(car(tree)), square3(cdr(tree)));
-};
-
-const square2 = tree => List.map(subtree => {
-  if (isPair(subtree)) return square2(subtree);
-  else return subtree * subtree;
-}, tree);
 
 const square = tree => map(x => x * x, tree);
 
@@ -92,6 +80,8 @@ const flatMap2 = (f, tree) => List.flatMap(subtree => {
   else return flatMap2(f, subtree);
 }, tree);
 
+const foldl = (f, z, tree) => List.foldl(f, z, flatten(tree));
+const foldr = (f, z, tree) => List.foldr(f, z, flatten(tree));
 
 exports.square = square;
 exports.map = map;
@@ -102,3 +92,5 @@ exports.str = str;
 exports.leaves = leaves;
 exports.reverse = reverse;
 exports.flatten = flatten;
+exports.foldl = foldl;
+exports.foldr = foldr;
