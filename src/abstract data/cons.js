@@ -9,7 +9,7 @@ const isPair = xs => typeof xs === 'function';
 const nil = undefined;
 
 const list = (...values) => 
-  values.length == 0 ? nil : cons(values[0], list(...values.slice(1)));
+  values.length <= 0 ? nil : cons(values[0], list(...values.slice(1)));
 
 
 exports.cons = cons;
