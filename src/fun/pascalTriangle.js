@@ -6,7 +6,7 @@ const List = require('../abstract data/fp-list.js');
 
 // n ^ 2 - complexity
 function fastPascalTriangle(n) {
-  if (n === 1) return cons(1, nil);
+  if (n <= 1) return cons(1, nil);
   else {
     const memo = fastPascalTriangle(n - 1);
     return List.zip((x,y) => x + y, shiftl(memo), shiftr(memo))
@@ -15,7 +15,7 @@ function fastPascalTriangle(n) {
 
 // 2 ^ n - complexity
 function pascalTriangle(n) {
-  if (n === 1) return cons(1, nil);
+  if (n <= 1) return cons(1, nil);
   else return List.zip(
     (x, y) => x + y,
     shiftl(pascalTriangle(n - 1)), 
