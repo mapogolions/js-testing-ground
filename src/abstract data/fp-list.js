@@ -89,6 +89,7 @@ const flatMap = (f, xs) => foldr((h, t) => append(f(h), t), nil, xs);
 const filter = (p, xs) => flatMap(_ => p(_) ? list(_) : list(), xs);
 const sameParity = xs => cons(car(xs), filter(x => x % 2 === car(xs) % 2, cdr(xs)));
 
+
 exports.length = length;
 exports.array = array;
 exports.str = str;

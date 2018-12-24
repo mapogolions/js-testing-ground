@@ -3,6 +3,7 @@
 const { cons, car, cdr, nil, isPair, empty, list } = require('./cons.js');
 const List = require('./fp-list.js');
 
+
 const array = tree => {
   const loop = (acc, tree) => {
     if (empty(tree)) return acc;
@@ -26,16 +27,6 @@ const leaves = tree => {
   else if (!isPair(car(tree))) return 1 + leaves(cdr(tree));
   else return leaves(car(tree)) + leaves(cdr(tree));
 };
-
-/* const leaves = tree => {
-  const loop = (count, tree) => {
-    if (empty(tree)) return count;
-    else if (isPair(car(tree))) return loop(count + loop(0, car(tree)), cdr(tree));
-    else return loop(count + 1, cdr(tree));
-  };
-  return loop(0, tree);
-}; */
-
 
 const reverse = tree => {
   const loop = (tree, acc) => {
@@ -68,29 +59,11 @@ const map = (f, tree) => List.map(subtree => {
   else return f(subtree);
 }, tree);
 
-const flatMap = (f, tree) => {
-  if (empty(tree)) return tree;
-  else if (!isPair(car(tree))) 
-    return List.append(f(car(tree)), flatMap(f, cdr(tree)));
-  else return cons(flatMap(f, car(tree)), flatMap(f, cdr(tree)));
-};
-
-const flatMap2 = (f, tree) => List.flatMap(subtree => {
-  if (!isPair(subtree)) return f(subtree);
-  else return flatMap2(f, subtree);
-}, tree);
-
-const foldl = (f, z, tree) => List.foldl(f, z, flatten(tree));
-const foldr = (f, z, tree) => List.foldr(f, z, flatten(tree));
 
 exports.square = square;
 exports.map = map;
-exports.flatMap = flatMap;
-exports.flatMap2 = flatMap2;
 exports.array = array;
 exports.str = str;
 exports.leaves = leaves;
 exports.reverse = reverse;
 exports.flatten = flatten;
-exports.foldl = foldl;
-exports.foldr = foldr;
