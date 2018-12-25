@@ -18,7 +18,7 @@ const elementOfSet = (elem, set) => {
 // O(n)
 const adjoin = (elem, set) => elementOfSet(elem, set) ? set : cons(elem, set);
 
-// Q(n^2)
+// O(n^2)
 const intersection = (set1, set2) => {
   if (empty(set1) || empty(set2)) return nil;
   else if (elementOfSet(car(set1), set2)) 
