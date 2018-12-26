@@ -28,17 +28,44 @@ function deriv(x, expr) {
   else throw new Error(`unknown expression type -- DERIV ${expr}`);
 }
 
+const checkNumber = (num, expr) => isNumber(expr) && expr === num;
+const isVar = expr => expr.length === 1 && expr >= 'a' && expr <= 'z';
+const isNumber = expr => typeof expr === 'number';
+const sameVar = (a, b) => {
+  if (typeof a !== 'string' || typeof b !== 'string')
+    return false;
+  else if (a.length !== 1 || b.length !== 1)
+    return false;
+  else if (a !== b) return false;
+  else return true;
+};
 const isSum = expr => isPair(expr) && car(expr) === '+';
 const isProduct = expr => isPair(expr) && car(expr) === '*';
 const addend = expr => cadr(expr);
 const augend = expr => caddr(expr);
 const multiplier = expr => cadr(expr);
 const multiplicand = expr => caddr(expr);
-const makeSum = (a, b) => list('+', a, b);
-const makeProduct = (a, b) => list('*', a, b);
+
+const makeSum = (a, b) => {
+  if (checkNumber(0, a)) return b;
+  else if (checkNumber(0, b)) return a;
+  else if (isNumber(a) && isNumber(b)) return a + b;
+  else return list('+', a, b);
+};
+
+const makeProduct = (a, b) => {
+  if (checkNumber(a) || checkNumber(b)) return 0;
+  else if (checkNumber(1, a)) return b;
+  else if (checkNumber(1, b)) return a;
+  else if (isNumber(a) && isNumber(b)) return a * b;
+  else return list('*', a, b);
+};
 
 
 exports.deriv = deriv;
+exports.isVar = isVar;
+exports.isNumber = isNumber;
+exports.sameVar = sameVar;
 exports.isSum = isSum;
 exports.isProduct = isProduct;
 exports.addend = addend;
