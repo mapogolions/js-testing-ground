@@ -3,6 +3,7 @@
 const { cons, nil, list, empty, car, cdr } = require('../abstract data/cons.js');
 const List = require('../abstract data/fp-list.js');
 
+
 function of(n) {
   return cons(n, () => of(n + 1));
 }

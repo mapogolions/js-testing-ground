@@ -2,18 +2,21 @@
 
 const { cons, nil } = require("../abstract data/cons.js");
 const List = require('../abstract data/fp-list.js');
+const Stream = require('../laziness/fp-stream.js');
+const { pipe } = require('../fun/pipe.js');
+const { curry } = require('../fun/curry.js');
 
 
-// n ^ 2 - complexity
+// O(n^2) - complexity
 function fastPascalTriangle(n) {
   if (n <= 1) return cons(1, nil);
   else {
     const memo = fastPascalTriangle(n - 1);
-    return List.zip((x,y) => x + y, shiftl(memo), shiftr(memo))
+    return List.zip((x,y) => x + y, shiftl(memo), shiftr(memo));
   };
 }
 
-// 2 ^ n - complexity
+// O(2^n) - complexity
 function pascalTriangle(n) {
   if (n <= 1) return cons(1, nil);
   else return List.zip(
@@ -23,9 +26,24 @@ function pascalTriangle(n) {
   );
 }
 
+function pascalList(n) {
+  function loop(row, n) {
+    if (n < 1) return nil;
+    return cons(
+      List.array(row),
+      () => loop(
+        List.zip((x, y) => x + y, shiftl(row), shiftr(row)),
+        n - 1
+      )
+    );
+  }
+  return loop(cons(1, nil), n);
+}
+
 const shiftl = xs => List.append(xs, cons(0, nil));
 const shiftr = xs => cons(0, xs);
 
 
 exports.pascalTriangle = pascalTriangle;
 exports.fastPascalTriangle = fastPascalTriangle;
+exports.pascalList = pascalList;
