@@ -2,10 +2,17 @@
 
 
 const test = require('ava');
-const { list, nil, cons, car, cdr, cadr, caddr } = require('../../src/abstract data/cons.js');
+const { list, cons, nil, car, cdr, cadr, caddr, isPair } = require('../../src/abstract data/cons.js');
 
 
-test("`cadr`", t => {
+test("`isPair`", t => {
+  t.true(isPair(cons('a', nil)));
+  t.true(isPair(list(1, 2)));
+  t.false(isPair(list()));
+  t.false(isPair(nil));
+});
+
+test("`cadr` & `caddr`", t => {
   t.is(caddr(list(1, 2, 3)), 3);
   t.is(cadr(list(1, 2, 3)), 2);
   t.is(car(cdr((list(1, 2)))), 2);

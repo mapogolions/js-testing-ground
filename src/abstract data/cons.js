@@ -14,7 +14,7 @@ const cadr = ({ tail }) => car(tail);
 const caddr = ({ tail }) => car(cdr(tail));
 const empty = xs => Object.is(xs, nil);
 const isPair = xs => xs['@@__cons__@@'];
-const nil = undefined;
+const nil = Object.freeze({ [`@@__cons__@@`]: false });
  
 const list = (...values) => 
   values.length <= 0 ? nil : cons(values[0], list(...values.slice(1))); 
