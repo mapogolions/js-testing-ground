@@ -31,9 +31,9 @@ const leaves = tree => {
 const reverse = tree => {
   const loop = (tree, acc) => {
     if (empty(tree)) return acc;
-    else if (isPair(car(tree))) 
+    else if (isPair(car(tree)))
       return loop(cdr(tree), List.append(list(reverse(car(tree))), acc));
-    else 
+    else
       return loop(cdr(tree), List.append(list(car(tree)), acc));
   };
   return loop(tree, nil);
@@ -58,6 +58,7 @@ const map = (f, tree) => List.map(subtree => {
   if (isPair(subtree)) return map(f, subtree);
   else return f(subtree);
 }, tree);
+
 
 
 exports.square = square;

@@ -37,7 +37,7 @@ const filter = (f, ss) => {
 };
 
 const Stream = {
-  of, 
+  of,
   from,
   head,
   tail,

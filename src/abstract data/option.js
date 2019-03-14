@@ -1,6 +1,7 @@
 'use strict';
 
 
+// Based on OCaml stadart library
 class Option {
   _match(f, g) {
     if (this === None) return g(this);
@@ -36,7 +37,7 @@ class Option {
   getOrElse(reserve) { return this._match(v => v, _ => reserve) }
 
   get join() { return this._match(v => v, _ => None) }
-  
+
   get isNone() { return this._match(v => false, _ => true) }
 
   get isSome() { return this._match(v => true, _ => false) }
@@ -44,12 +45,12 @@ class Option {
   toString() { return this._match(v => `Some(${v})`, _ => "None") }
 }
 
-const None = Object.freeze({ 
+const None = Object.freeze({
   __proto__: Object.create(Option.prototype),
 });
 
 const Some = value => Object.freeze({
-  __proto__: Object.create(Option.prototype), 
+  __proto__: Object.create(Option.prototype),
   value
 });
 
