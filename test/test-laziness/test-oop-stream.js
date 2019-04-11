@@ -2,7 +2,7 @@
 
 const test = require('ava');
 
-const { Stream, Cons } = require('../../src/laziness/stream.js');
+const { Stream } = require('../../src/laziness/oop-stream.js');
 
 
 test("Test: stream filter", t => {
