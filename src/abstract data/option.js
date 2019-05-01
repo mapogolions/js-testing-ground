@@ -1,31 +1,40 @@
 'use strict';
 
 
-// Based on OCaml stadart library
+// Based on OCaml standart library
 class Option {
   _match(f, g) {
     if (this === None) return g(this);
     else return f(this.value);
   }
-  iter(f) { return this._match(x => x + 1, _ => undefined) }
 
-  map(f) { return this._match(v => Some(f(v)), _ => None) }
+  iter(f) {
+    return this._match(x => x + 1, _ => undefined);
+  }
 
-  flatMap(f) { return this._match(v => f(v), _ => None) }
+  map(f) {
+    return this._match(v => Some(f(v)), _ => None);
+  }
+
+  flatMap(f) {
+    return this._match(v => f(v), _ => None);
+  }
 
   eq(opt) {
     const value1 = this.flatMap(v => Some(v));
     const value2 = opt.flatMap(v => Some(v));
     if (value1 === None && value2 === None) {
       return true;
-    } else if (value1 !== None && value2 !== None) {
-      return value1.get === value2.get;
-    } else {
-      return false;
     }
+    if (value1 !== None && value2 !== None) {
+      return value1.get === value2.get;
+    }
+    return false;
   }
 
-  get toList() { return this._match(v => [v], _ => []) }
+  get toList() {
+    return this._match(v => [v], _ => []);
+  }
 
   get get() {
     return this._match(
@@ -34,15 +43,25 @@ class Option {
     );
   }
 
-  getOrElse(reserve) { return this._match(v => v, _ => reserve) }
+  getOrElse(placeholder) {
+    return this._match(v => v, _ => placeholder);
+  }
 
-  get join() { return this._match(v => v, _ => None) }
+  get join() {
+    return this._match(v => v, _ => None);
+  }
 
-  get isNone() { return this._match(v => false, _ => true) }
+  get isNone() {
+    return this._match(v => false, _ => true);
+  }
 
-  get isSome() { return this._match(v => true, _ => false) }
+  get isSome() {
+    return this._match(_ => true, _ => false);
+  }
 
-  toString() { return this._match(v => `Some(${v})`, _ => "None") }
+  toString() {
+    return this._match(v => `Some(${v})`, _ => "None");
+  }
 }
 
 const None = Object.freeze({
@@ -54,6 +73,5 @@ const Some = value => Object.freeze({
   value
 });
 
-exports.Option = Option;
-exports.Some = Some;
-exports.None = None;
+
+module.exports = { Option, Some, None };
