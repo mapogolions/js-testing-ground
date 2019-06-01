@@ -20,16 +20,17 @@ test('overwrite existing property of object', t => {
 });
 
 test('get a property value through lens', t => {
-  const httpLens = lens(getter('status'), setter('status'));
-  t.is(httpLens.get({ status: 200 }), 200);
-  t.is(httpLens.get({ message: 'Ok' }), undefined);
+  const arrayLikeLens = lens(getter('length'), setter('length'));
+  t.is(arrayLikeLens.get(new Array(2)), 2);
+  t.is(arrayLikeLens.get({ length: 10 }), 10);
+  t.is(arrayLikeLens.get([]), 0);
 });
 
 test('set a property value through lens', t => {
-  const httpLens = lens(getter('status'), setter('status'));
-  const response = { status: 200 };
-  const another = httpLens.set(404, response);
-  t.true(response !== another);
-  t.is(response.status, 200);
-  t.is(another.status, 404);
+  const iterableLens = lens(getter(Symbol.iterator), setter(Symbol.iterator));
+  const mock = {};
+  const another = iterableLens.set(function* () { yield 101 }, mock);
+  for (const elem of another) {
+    t.is(elem, 101);
+  }
 });
