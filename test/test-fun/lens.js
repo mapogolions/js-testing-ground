@@ -2,7 +2,7 @@
 
 
 const test = require('ava');
-const { lens, view, set, map, remove } = require('../../src/fun/lens-fp.js');
+const { lens, view, set, over, remove } = require('../../src/fun/lens.js');
 
 
 test('view a property value', t => {
@@ -24,7 +24,7 @@ test('creates iterable entity from source', t => {
 test('maps success response to not found server answer', t => {
   const httpStatusLens = lens('status');
   const ok = { status: 200 };
-  const not_found = map(httpStatusLens, status => 404, ok);
+  const not_found = over(httpStatusLens, status => 404, ok);
   t.is(not_found.status, 404);
 });
 
