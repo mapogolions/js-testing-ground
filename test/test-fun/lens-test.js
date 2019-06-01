@@ -2,7 +2,12 @@
 
 
 const test = require('ava');
-const { getter, setter, lens } = require('../../src/fun/lens.js');
+const { getter,
+        setter,
+        lens,
+        get,
+        set,
+        map } = require('../../src/fun/lens.js');
 
 
 test('returns value of object property', t => {
@@ -21,16 +26,23 @@ test('overwrite existing property of object', t => {
 
 test('get a property value through lens', t => {
   const arrayLikeLens = lens(getter('length'), setter('length'));
-  t.is(arrayLikeLens.get(new Array(2)), 2);
-  t.is(arrayLikeLens.get({ length: 10 }), 10);
-  t.is(arrayLikeLens.get([]), 0);
+  t.is(get(arrayLikeLens, new Array(2)), 2);
+  t.is(get(arrayLikeLens, { length: 10 }), 10);
+  t.is(get(arrayLikeLens, []), 0);
 });
 
 test('set a property value through lens', t => {
   const iterableLens = lens(getter(Symbol.iterator), setter(Symbol.iterator));
   const mock = {};
-  const another = iterableLens.set(function* () { yield 101 }, mock);
+  const another = set(iterableLens, function* () { yield 101 }, mock);
   for (const elem of another) {
     t.is(elem, 101);
   }
+});
+
+test('map property value to', t => {
+  const httpStatusLens = lens(getter('status'), setter('status'));
+  const ok = { status: 200 };
+  const not_found = map(httpStatusLens, status => 404, ok);
+  t.is(not_found.status, 404);
 });
