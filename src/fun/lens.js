@@ -1,8 +1,9 @@
 'use strict';
 
 
-const defaultGetter = prop => obj => obj[prop];
-const defaultSetter = prop => (value, obj) => ({ ...obj, [prop]: value });
+const defaultGetter = prop => instance => instance[prop];
+const defaultSetter = prop => (value, instance) => ({ ...instance, [prop]: value });
+
 
 module.exports = {
   defaultGetter,
