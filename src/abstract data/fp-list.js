@@ -3,11 +3,11 @@
 const { cons, car, cdr, list, empty, nil } = require('./cons.js');
 
 /**
- * Canonical definition persistent single linked list.
+ * Persistent single linked list (canonical definition).
  * It's recursive data structure.
  *  type list 'a = nil | cons 'a (list 'a)
  *   where - `nil` is marker of list end
- * 
+ *
  * (cons 1
  *    (cons 2
  *      (cons 3
@@ -49,7 +49,7 @@ const dropWhile = (p, xs) => {
  * xs = (cons 1 (cons 2 (cons 3 (cons 4 nil))))
  * foldl xs 0 + = ((((0 + 1) + 2) + 3) + 4)
  * foldl xs 1 * = ((((1 * 1) * 2) * 3) * 4)
- * 
+ *
  * foldl :: ('b -> 'a -> 'b) -> 'b -> ['a]
  */
 const foldl = (f, acc, xs) => {
@@ -61,7 +61,7 @@ const foldl = (f, acc, xs) => {
  * xs = (cons 1 (cons 2 (cons 3 (cons 4 nil))))
  * foldl xs 0 + = (1 + (2 + (3 + (4 + 0))))
  * foldl xs 1 * = (1 * (2 * (3 * (4 * 1))))
- * 
+ *
  * foldr :: ('a -> 'b -> 'b) -> 'b -> ['a]
  */
 const foldr = (f, end, xs) => {
@@ -107,4 +107,4 @@ exports.map = map;
 exports.flatMap = flatMap;
 exports.filter = filter;
 exports.lastPair = lastPair;
-exports.sameParity = sameParity
+exports.sameParity = sameParity;

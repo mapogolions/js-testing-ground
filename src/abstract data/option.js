@@ -39,7 +39,7 @@ class Option {
   get get() {
     return this._match(
       v => v,
-      _ => { throw new Error("Invalid argument. Option is None") }
+      _ => { throw new Error("Invalid argument. Option is None"); }
     );
   }
 
