@@ -12,13 +12,8 @@ class CancellablePromise extends Promise {
   constructor(executor) {
     super((resolve, reject) => {
       executor(
-        res => {
-          if (this.cancelled)
-            reject(new Error('Promise was cancelled'));
-          else
-            resolve(res);
-
-        },
+        result => this.cancelled
+          ? reject(new Error('Promise was cancelled')) : resolve(result),
         reject
       );
     });

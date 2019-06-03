@@ -12,7 +12,7 @@ const lens = prop => ({
 
 const view = (lens, instance) => lens.get(instance);
 const set = (lens, value, instance) => lens.set(value, instance);
-const over= (lens, f, instance) => lens.set(f(lens.get(instance)), instance);
+const over = (lens, f, instance) => lens.set(f(lens.get(instance)), instance);
 const remove = (lens, instance) => lens.delete(instance);
 
 
