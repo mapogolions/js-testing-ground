@@ -8,4 +8,31 @@ const cancellable = f => {
 };
 
 
-module.exports = { cancellable };
+class CancellablePromise extends Promise {
+  constructor(executor) {
+    super((resolve, reject) => {
+      executor(
+        res => {
+          if (this.cancelled)
+            reject(new Error('Promise was cancelled'));
+          else
+            resolve(res);
+
+        },
+        reject
+      );
+    });
+    this._cancelled = false;
+  }
+
+  get cancelled() {
+    return this._cancelled;
+  }
+
+  cancel() {
+    this._cancelled = true;
+  }
+}
+
+
+module.exports = { cancellable, CancellablePromise };
