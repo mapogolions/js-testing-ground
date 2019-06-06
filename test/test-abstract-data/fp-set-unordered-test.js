@@ -2,9 +2,9 @@
 
 const test = require('ava');
 const SetUnordered = require('../../src/abstract data/fp-set-unrodered.js');
+const pipe = require('../../src/fun/pipe.js');
+const curry = require('../../src/fun/curry.js');
 const { list } = require('../../src/abstract data/cons.js');
-const { pipe } = require('../../src/fun/pipe.js');
-const { curry } = require('../../src/fun/curry.js');
 
 
 test("method `SetUnordered.union`", t => {

@@ -1,13 +1,11 @@
-'use strict';
-
-
+/* eslint-disable no-shadow */
 const lens = prop => ({
   get: instance => instance[prop],
   set: (value, instance) => ({ ...instance, [prop]: value }),
-  delete: instance => {
-    const { [prop]: forgot, ...rest} = instance;
+  delete: (instance) => {
+    const { [prop]: forgot, ...rest } = instance;
     return rest;
-  }
+  },
 });
 
 const view = (lens, instance) => lens.get(instance);
@@ -21,5 +19,5 @@ module.exports = {
   set,
   over,
   remove,
-  lens
+  lens,
 };

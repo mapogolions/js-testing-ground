@@ -2,8 +2,8 @@
 
 const test = require('ava');
 
-const { pipe } = require('../../src/fun/pipe.js');
-const { curry } = require('../../src/fun/curry.js');
+const pipe = require('../../src/fun/pipe.js');
+const curry = require('../../src/fun/curry.js');
 const { list, nil } = require('../../src/abstract data/cons.js');
 const List = require('../../src/abstract data/fp-list.js');
 

@@ -1,23 +1,17 @@
-'use strict';
-
-
+/* eslint-disable no-use-before-define */
 // Based on OCaml standart library
 class Option {
-  _match(f, g) {
+  match(f, g) {
     if (this === None) return g(this);
-    else return f(this.value);
-  }
-
-  iter(f) {
-    return this._match(x => x + 1, _ => undefined);
+    return f(this.value);
   }
 
   map(f) {
-    return this._match(v => Some(f(v)), _ => None);
+    return this.match(v => Some(f(v)), () => None);
   }
 
   flatMap(f) {
-    return this._match(v => f(v), _ => None);
+    return this.match(v => f(v), () => None);
   }
 
   eq(opt) {
@@ -33,34 +27,34 @@ class Option {
   }
 
   get toList() {
-    return this._match(v => [v], _ => []);
+    return this.match(v => [v], _ => []);
   }
 
   get get() {
-    return this._match(
+    return this.match(
       v => v,
-      _ => { throw new Error("Invalid argument. Option is None"); }
+      () => { throw new Error('Invalid argument. Option is None'); },
     );
   }
 
   getOrElse(placeholder) {
-    return this._match(v => v, _ => placeholder);
+    return this.match(v => v, () => placeholder);
   }
 
   get join() {
-    return this._match(v => v, _ => None);
+    return this.match(v => v, () => None);
   }
 
   get isNone() {
-    return this._match(v => false, _ => true);
+    return this.match(() => false, () => true);
   }
 
   get isSome() {
-    return this._match(_ => true, _ => false);
+    return this.match(() => true, () => false);
   }
 
   toString() {
-    return this._match(v => `Some(${v})`, _ => "None");
+    return this.match(v => `Some(${v})`, () => 'None');
   }
 }
 
@@ -70,7 +64,7 @@ const None = Object.freeze({
 
 const Some = value => Object.freeze({
   __proto__: Object.create(Option.prototype),
-  value
+  value,
 });
 
 

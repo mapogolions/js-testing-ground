@@ -1,5 +1,3 @@
-'use strict';
-
 const test = require('ava');
 const { compose, asyncCompose, cpsCompose } = require('../../src/fun/compose.js');
 

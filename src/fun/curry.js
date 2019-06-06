@@ -1,6 +1,3 @@
-'use strict';
-
-
 function curry(f) {
   const arity = f.length;
   return function f1(...args) {
@@ -9,9 +6,9 @@ function curry(f) {
     }
     return function f2(...args2) {
       return f1(...args, ...args2);
-    }
+    };
   };
 }
 
 
-exports.curry = curry;
+module.exports = curry;

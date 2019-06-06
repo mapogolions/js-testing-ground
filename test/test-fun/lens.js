@@ -1,38 +1,37 @@
-'use strict';
-
-
 const test = require('ava');
-const { lens, view, set, over, remove } = require('../../src/fun/lens.js');
+const {
+  lens, view, set, over, remove,
+} = require('../../src/fun/lens.js');
 
 
-test('view a property value', t => {
+test('view a property value', (t) => {
   const arrayLikeLens = lens('length');
   t.is(view(arrayLikeLens, new Array(2)), 2);
   t.is(view(arrayLikeLens, { length: 10 }), 10);
   t.is(view(arrayLikeLens, []), 0);
 });
 
-test('creates iterable entity from source', t => {
+test('creates iterable entity from source', (t) => {
   const iterableLens = lens(Symbol.iterator);
   const mock = {};
-  const another = set(iterableLens, function* () { yield 101 }, mock);
+  const another = set(iterableLens, function* () { yield 101; }, mock);
   for (const elem of another) {
     t.is(elem, 101);
   }
 });
 
-test('maps success response to not found server answer', t => {
+test('maps success response to not found server answer', (t) => {
   const httpStatusLens = lens('status');
   const ok = { status: 200 };
-  const not_found = over(httpStatusLens, status => 404, ok);
-  t.is(not_found.status, 404);
+  const notFound = over(httpStatusLens, status => 404, ok);
+  t.is(notFound.status, 404);
 });
 
-test('removes support of iteration protocol', t => {
+test('removes support of iteration protocol', (t) => {
   const iterable = {
-    *[Symbol.iterator]() {
+    * [Symbol.iterator]() {
       yield 101;
-    }
+    },
   };
   const nonIterableLens = lens(Symbol.iterator);
   const another = remove(nonIterableLens, iterable);

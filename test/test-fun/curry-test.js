@@ -2,7 +2,7 @@
 
 const test = require('ava');
 
-const { curry } = require('../../src/fun/curry.js');
+const curry = require('../../src/fun/curry.js');
 
 
 test("test `partial`", t => {

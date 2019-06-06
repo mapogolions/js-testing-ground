@@ -1,5 +1,4 @@
-'use strict';
-
+/* eslint-disable no-shadow */
 /**
  * Immutable single linked list (canonical definition)
  * type list 'a = Nil | Cons 'a * list 'a
@@ -16,6 +15,13 @@
  * val drop : int -> stream 'a -> stream 'a
 */
 
+const Cons = (head, tail) => Object.freeze({
+  __proto__: Object.create(Stream.prototype),
+  head,
+  get tail() { return tail(); },
+});
+
+
 class Stream {
   static of(n) {
     return Cons(n, () => Stream.of(n + 1));
@@ -29,22 +35,25 @@ class Stream {
   // return list of the first [n] elements
   take(n) {
     if (n <= 0) return [];
-    else return [this.head, ...this.tail.take(n - 1)];
+    return [this.head, ...this.tail.take(n - 1)];
   }
+
   // @tailrec optimization
   takerec(n) {
-    const loop = (acc, ss, n) =>
-      n <= 0 ? acc : loop([...acc, ss.head], ss.tail, n - 1);
+    const loop = (acc, ss, n) => (n <= 0
+      ? acc : loop([...acc, ss.head], ss.tail, n - 1));
     return loop([], this, n);
   }
 
   drop(n) {
-    const loop = (ss, n) =>
-      n <= 0 ? ss : loop(ss.tail, n - 1);
+    const loop = (ss, n) => (n <= 0 ? ss : loop(ss.tail, n - 1));
     return loop(this, n);
   }
 
-  get square() { return Cons(this.head * this.head, () => this.tail.square) }
+  get square() {
+    return Cons(this.head * this.head, () => this.tail.square);
+  }
+
   sum(ss) {
     return Cons(this.head + ss.head, () => this.tail.sum(ss.tail));
   }
@@ -58,13 +67,7 @@ class Stream {
       ? Cons(this.head, () => this.tail.filter(f))
       : this.tail.filter(f);
   }
-};
+}
 
-const Cons = (head, tail) => Object.freeze({
-  __proto__: Object.create(Stream.prototype),
-  head,
-  get tail() { return tail() }
-});
 
-exports.Stream = Stream;
-exports.Cons = Cons;
+module.exports = { Stream, Cons };

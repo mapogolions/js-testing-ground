@@ -1,9 +1,7 @@
-'use strict';
-
-
-const cancellable = f => {
-  const wrapper = (...args) => f ? f(...args) : null;
-  wrapper.cancel = () => (f = null);
+const cancellable = (f) => {
+  let cancelled = false;
+  const wrapper = (...args) => (cancelled ? null : f(...args));
+  wrapper.cancel = function cancel() { cancelled = true; };
   return wrapper;
 };
 
@@ -12,20 +10,16 @@ class CancellablePromise extends Promise {
   constructor(executor) {
     super((resolve, reject) => {
       executor(
-        result => this.cancelled
-          ? reject(new Error('Promise was cancelled')) : resolve(result),
-        reject
+        result => (this.cancelled
+          ? reject(new Error('Promise was cancelled')) : resolve(result)),
+        reject,
       );
     });
-    this._cancelled = false;
-  }
-
-  get cancelled() {
-    return this._cancelled;
+    this.cancelled = false;
   }
 
   cancel() {
-    this._cancelled = true;
+    this.cancelled = true;
   }
 }
 
