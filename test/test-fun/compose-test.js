@@ -1,5 +1,5 @@
 const test = require('ava');
-const { compose, asyncCompose, cpsCompose } = require('../../src/fun/compose.js');
+const { compose, composeAsync, composeCPS } = require('../../src/fun/compose.js');
 
 
 test('traditional functional composition', (t) => {
@@ -12,8 +12,8 @@ test('traditional functional composition', (t) => {
 });
 
 test('composition of asynchronous functions', async (t) => {
-  const f = asyncCompose(async x => x ** 2, async x => x + 1);
-  const g = asyncCompose(async x => x % 2 === 0, x => x + 1);
+  const f = composeAsync(async x => x ** 2, async x => x + 1);
+  const g = composeAsync(async x => x % 2 === 0, x => x + 1);
   t.is(await f(1), 4);
   t.is(await f(8), 81);
   t.true(await g(1));
@@ -21,11 +21,11 @@ test('composition of asynchronous functions', async (t) => {
 });
 
 test('composition of functions using continuation passing style', (t) => {
-  const f = cpsCompose(
+  const f = composeCPS(
     (x, callback) => callback(null, x ** 2),
     (x, callback) => callback(null, x + 1),
   );
-  const g = cpsCompose(
+  const g = composeCPS(
     (x, callback) => callback(null, x % 2 === 0),
     (x, callback) => callback(null, x + 1),
   );

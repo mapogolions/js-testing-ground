@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable no-shadow */
 /**
  * Immutable single linked list (canonical definition)

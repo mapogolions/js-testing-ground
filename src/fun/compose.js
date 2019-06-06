@@ -1,7 +1,7 @@
 const compose = (g, f) => x => g(f(x));
-const asyncCompose = (g, f) => async x => g(await f(x));
+const composeAsync = (g, f) => async x => g(await f(x));
 
-const cpsCompose = (g, f) => (x, callback) => {
+const composeCPS = (g, f) => (x, callback) => {
   f(x, (err, data) => {
     if (err) {
       callback(err);
@@ -12,4 +12,4 @@ const cpsCompose = (g, f) => (x, callback) => {
 };
 
 
-module.exports = { compose, asyncCompose, cpsCompose };
+module.exports = { compose, composeAsync, composeCPS };

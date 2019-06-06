@@ -1,6 +1,6 @@
 const test = require('ava');
 const {
-  pipeline, backPipeline, asyncPipeline, backAsyncPipeline,
+  pipeline, backPipeline, pipelineAsync, backPipelineAsync,
 } = require('../../src/fun/pipeline.js');
 
 
@@ -13,7 +13,7 @@ test('builds pipeline from sequence of sync functions', (t) => {
 
 test('builds pipeline from sequence of async functions', async (t) => {
   const fs = [async x => x + 1, async x => x ** 2, async x => x - 1];
-  const [f, g] = [asyncPipeline(...fs), backAsyncPipeline(...fs)];
+  const [f, g] = [pipelineAsync(...fs), backPipelineAsync(...fs)];
   t.is(await f(5), 35);
   t.is(await g(5), 17);
 });
