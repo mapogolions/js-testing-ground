@@ -33,3 +33,15 @@ test('builds pipeline from sequence of functions using CPS', (t) => {
   t.is(f(5, (err, payload) => t.is(payload, 35)));
   t.is(g(5, (err, payload) => t.is(payload, 17)));
 });
+
+test.cb('builds pipeline from sequence of functions using async CPS', (t) => {
+  const fs = [
+    (x, callback) => setTimeout(() => callback(null, x + 1), 5),
+    (x, callback) => setTimeout(() => callback(null, x ** 2), 3),
+    (x, callback) => setTimeout(() => callback(null, x - 1), 10),
+  ];
+  pipelineCps(...fs)(5, (err, payload) => {
+    t.is(payload, 35);
+    t.end();
+  });
+});

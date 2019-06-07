@@ -35,7 +35,7 @@ test('composition of functions using continuation passing style', (t) => {
   g(2, (err, payload) => t.false(payload));
 });
 
-test.cb('composition of functions using asynchronous continuation passint style', (t) => {
+test.cb('composition of functions using asynchronous continuation passing style', (t) => {
   const f = composeCps(
     (content, callback) => setTimeout(() => callback(null, content.split('\n')), 10),
     (fileName, callback) => setTimeout(() => callback(null, 'foo\nbar\n'), 15),
