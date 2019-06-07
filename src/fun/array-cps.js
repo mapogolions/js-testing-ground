@@ -39,8 +39,29 @@ function filter(source, cps, done) {
   }
 }
 
+function each(source, cps, done) {
+  if (!source.length) {
+    done(null);
+    return;
+  }
+  let [failed, unfulfilled] = [false, source.length];
+  const next = (err) => {
+    if (failed) return;
+    if (err) {
+      failed = true;
+      done(err);
+      return;
+    }
+    if (--unfulfilled <= 0) done(null);
+  };
+  for (const elem of source) {
+    cps(elem, next);
+  }
+}
+
 
 module.exports = {
   map,
   filter,
+  each,
 };
