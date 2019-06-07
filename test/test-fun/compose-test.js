@@ -36,11 +36,11 @@ test('composition of functions using continuation passing style', (t) => {
 });
 
 test.cb('composition of functions using asynchronous continuation passing style', (t) => {
-  const incrementThenSquare = composeCps(
+  const readThenSplitByNewLine = composeCps(
     (content, callback) => setTimeout(() => callback(null, content.split('\n')), 10),
     (fileName, callback) => setTimeout(() => callback(null, 'foo\nbar\n'), 15),
   );
-  incrementThenSquare('fake.md', (err, lines) => {
+  readThenSplitByNewLine('fake.md', (err, lines) => {
     t.deepEqual(lines, ['foo', 'bar', '']);
     t.end();
   });
