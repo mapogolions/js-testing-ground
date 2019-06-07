@@ -35,6 +35,19 @@ test('composition of functions using continuation passing style', (t) => {
   isEvenAfterIncrement(2, (err, payload) => t.false(payload));
 });
 
+test('error breaks execution of synchronous flow', (t) => {
+  const divisionThenDecrement = composeCps(
+    (x, callback) => callback(null, x - 1),
+    ({ num, denom }, callback) => (denom === 0
+      ? callback(new Error('Division by zero')) : callback(null, num / denom)),
+  );
+  divisionThenDecrement({ num: 10, denom: 5 }, (err, payload) => t.is(payload, 1));
+  divisionThenDecrement({ num: 10, denom: 0 }, (err, payload) => {
+    t.is(err.message, 'Division by zero');
+    t.is(payload, undefined);
+  });
+});
+
 test.cb('composition of functions using asynchronous continuation passing style', (t) => {
   const readThenSplitByNewLine = composeCps(
     (content, callback) => setTimeout(() => callback(null, content.split('\n')), 10),
@@ -42,6 +55,19 @@ test.cb('composition of functions using asynchronous continuation passing style'
   );
   readThenSplitByNewLine('fake.md', (err, lines) => {
     t.deepEqual(lines, ['foo', 'bar', '']);
+    t.end();
+  });
+});
+
+test.cb('error breaks execution of asynchronous flow', (t) => {
+  const divisionThenDecrement = composeCps(
+    (x, callback) => setTimeout(() => callback(null, x - 1), 10),
+    ({ num, denom }, callback) => setTimeout(() => (denom === 0
+      ? callback(new Error('Division by zero')) : callback(null, num / denom)), 5),
+  );
+  divisionThenDecrement({ num: 10, denom: 0 }, (err, payload) => {
+    t.is(err.message, 'Division by zero');
+    t.is(payload, undefined);
     t.end();
   });
 });
