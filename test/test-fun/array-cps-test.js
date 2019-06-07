@@ -49,7 +49,7 @@ test.cb('strings are mapped to numbers', (t) => {
   );
 });
 
-test.cb('time collapse', (t) => {
+test.cb('different execution time', (t) => {
   const source = [1, 2, 3, 4];
   const expected = source.map(x => x + 1);
   const even = x => x % 2 === 0;
