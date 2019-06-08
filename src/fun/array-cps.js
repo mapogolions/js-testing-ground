@@ -6,7 +6,7 @@ function map(source, cps, done) {
     return;
   }
   const slots = new Array(source.length);
-  let [failed, unfulfilled] = [false, source.length];
+  let [failed, pending] = [false, source.length];
   const next = index => (err, data) => {
     if (failed) return;
     if (err) {
@@ -15,7 +15,7 @@ function map(source, cps, done) {
       return;
     }
     slots[index] = data;
-    if (--unfulfilled <= 0) done(null, slots);
+    if (--pending <= 0) done(null, slots);
   };
   for (const [index, elem] of source.entries()) {
     cps(elem, next(index));
@@ -29,10 +29,10 @@ function filter(source, cps, done) {
   }
   const IGNORE = Symbol('Missed element');
   const slots = new Array(source.length);
-  let unfulfilled = source.length;
+  let pending = source.length;
   const next = index => (err, accepted) => {
     slots[index] = (err || !accepted) ? IGNORE : source[index];
-    if (--unfulfilled <= 0) done(null, slots.filter(x => x !== IGNORE));
+    if (--pending <= 0) done(null, slots.filter(x => x !== IGNORE));
   };
   for (const [index, elem] of source.entries()) {
     cps(elem, next(index));
@@ -44,7 +44,7 @@ function each(source, cps, done) {
     done(null);
     return;
   }
-  let [failed, unfulfilled] = [false, source.length];
+  let [failed, pending] = [false, source.length];
   const next = (err) => {
     if (failed) return;
     if (err) {
@@ -52,7 +52,7 @@ function each(source, cps, done) {
       done(err);
       return;
     }
-    if (--unfulfilled <= 0) done(null);
+    if (--pending <= 0) done(null);
   };
   for (const elem of source) {
     cps(elem, next);
