@@ -1,12 +1,12 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable no-restricted-syntax */
-function map(source, cps, done) {
-  if (!source.length) {
+function map(items, cps, done) {
+  if (!items.length) {
     done(null, []);
     return;
   }
-  const slots = new Array(source.length);
-  let [failed, pending] = [false, source.length];
+  const slots = new Array(items.length);
+  let [failed, pending] = [false, items.length];
   const next = index => (err, data) => {
     if (failed) return;
     if (err) {
@@ -17,34 +17,34 @@ function map(source, cps, done) {
     slots[index] = data;
     if (--pending <= 0) done(null, slots);
   };
-  for (const [index, elem] of source.entries()) {
+  for (const [index, elem] of items.entries()) {
     cps(elem, next(index));
   }
 }
 
-function filter(source, cps, done) {
-  if (!source.length) {
+function filter(items, cps, done) {
+  if (!items.length) {
     done(null, []);
     return;
   }
   const IGNORE = Symbol('Missed element');
-  const slots = new Array(source.length);
-  let pending = source.length;
+  const slots = new Array(items.length);
+  let pending = items.length;
   const next = index => (err, accepted) => {
-    slots[index] = (err || !accepted) ? IGNORE : source[index];
+    slots[index] = (err || !accepted) ? IGNORE : items[index];
     if (--pending <= 0) done(null, slots.filter(x => x !== IGNORE));
   };
-  for (const [index, elem] of source.entries()) {
-    cps(elem, next(index));
+  for (const [index, item] of items.entries()) {
+    cps(item, next(index));
   }
 }
 
-function each(source, cps, done) {
-  if (!source.length) {
+function each(items, cps, done) {
+  if (!items.length) {
     done(null);
     return;
   }
-  let [failed, pending] = [false, source.length];
+  let [failed, pending] = [false, items.length];
   const next = (err) => {
     if (failed) return;
     if (err) {
@@ -54,8 +54,8 @@ function each(source, cps, done) {
     }
     if (--pending <= 0) done(null);
   };
-  for (const elem of source) {
-    cps(elem, next);
+  for (const item of items) {
+    cps(item, next);
   }
 }
 
