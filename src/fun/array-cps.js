@@ -59,9 +59,30 @@ function each(items, cps, done) {
   }
 }
 
+function every(items, cps, done) {
+  if (!items.length) {
+    done(null, true);
+    return;
+  }
+  let [failed, backloggedCount] = [false, items.length];
+  const next = (err, accepted) => {
+    if (failed) return;
+    if (err || !accepted) {
+      failed = true;
+      done(null, false);
+      return;
+    }
+    if (--backloggedCount <= 0) done(null, true);
+  };
+  for (const item of items) {
+    cps(item, next);
+  }
+}
+
 
 module.exports = {
   map,
   filter,
   each,
+  every,
 };
