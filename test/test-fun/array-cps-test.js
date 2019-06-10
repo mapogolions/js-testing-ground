@@ -1,5 +1,10 @@
 const test = require('ava');
-const { map, filter, each } = require('../../src/fun/array-cps.js');
+const {
+  map,
+  filter,
+  each,
+  every,
+} = require('../../src/fun/array-cps.js');
 
 
 test.cb('map with empty array', (t) => {
@@ -152,6 +157,56 @@ test.cb('push each item', (t) => {
     (err) => {
       t.is(err, null);
       t.deepEqual(sideEffect, [1, 2, 3]);
+      t.end();
+    },
+  );
+});
+
+test.cb('every with empty array', (t) => {
+  every(
+    [],
+    (_, callback) => process.nextTick(callback),
+    (err, result) => {
+      t.is(err, null);
+      t.true(result);
+      t.end();
+    },
+  );
+});
+
+test.cb('not each number is even', (t) => {
+  const even = x => x % 2 === 0;
+  every(
+    [2, 1, 6],
+    (item, callback) => process.nextTick(() => {
+      if (even(item)) {
+        callback(null, true);
+        return;
+      }
+      callback(null, false);
+    }),
+    (err, result) => {
+      t.false(result);
+      t.is(err, null);
+      t.end();
+    },
+  );
+});
+
+test.cb('each number is even', (t) => {
+  const even = x => x % 2 === 0;
+  every(
+    [2, 4, 6],
+    (item, callback) => process.nextTick(() => {
+      if (even(item)) {
+        callback(null, true);
+        return;
+      }
+      callback(null, false);
+    }),
+    (err, result) => {
+      t.true(result);
+      t.is(err, null);
       t.end();
     },
   );
