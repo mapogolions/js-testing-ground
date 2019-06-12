@@ -79,10 +79,34 @@ function every(items, cps, done) {
   }
 }
 
+function some(items, cps, done) {
+  if (!items.length) {
+    done(null, false);
+    return;
+  }
+  let satisfied = false;
+  let backloggedCount = items.length;
+
+  const next = (_err, accepted) => {
+    if (satisfied) return;
+    if (accepted) {
+      satisfied = true;
+      done(null, true);
+      return;
+    }
+    if (--backloggedCount <= 0) done(null, false);
+  };
+
+  for (const item of items) {
+    cps(item, next);
+  }
+}
+
 
 module.exports = {
   map,
   filter,
   each,
   every,
+  some,
 };

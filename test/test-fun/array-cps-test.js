@@ -4,6 +4,7 @@ const {
   filter,
   each,
   every,
+  some,
 } = require('../../src/fun/array-cps.js');
 
 
@@ -207,6 +208,18 @@ test.cb('each number is even', (t) => {
     (err, result) => {
       t.true(result);
       t.is(err, null);
+      t.end();
+    },
+  );
+});
+
+test.cb('some with empty', (t) => {
+  some(
+    [],
+    (_item, callback) => process.nextTick(callback),
+    (err, result) => {
+      t.is(err, null);
+      t.false(result);
       t.end();
     },
   );
