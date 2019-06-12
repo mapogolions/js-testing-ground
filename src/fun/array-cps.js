@@ -12,7 +12,7 @@ function map(items, cps, done) {
     if (hasFailed) return;
     if (err) {
       hasFailed = true;
-      done(err, slots);
+      done(err);
       return;
     }
     slots[index] = data;

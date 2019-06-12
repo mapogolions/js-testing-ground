@@ -22,7 +22,6 @@ test.cb('map with empty array', (t) => {
 test.cb('map with error', (t) => {
   const source = [1, 2, 3, 4];
   const failure = new Error('Map error');
-  const expectedFailureAtomicity = [1, undefined, undefined, undefined];
   map(
     source,
     (item, callback) => {
@@ -34,9 +33,9 @@ test.cb('map with error', (t) => {
         callback(null, item);
       });
     },
-    (err, failureAtomicity) => {
+    (err, result) => {
       t.is(err, failure);
-      t.deepEqual(failureAtomicity, expectedFailureAtomicity);
+      t.deepEqual(result, undefined);
       t.end();
     },
   );
@@ -118,7 +117,7 @@ test.cb('ignores even numbers', (t) => {
 test.cb('each with empty', (t) => {
   each(
     [],
-    (_, callback) => process.nextTick(() => callback(null)),
+    (_item, callback) => process.nextTick(callback),
     (err) => {
       t.is(err, null);
       t.end();
@@ -166,7 +165,7 @@ test.cb('push each item', (t) => {
 test.cb('every with empty array', (t) => {
   every(
     [],
-    (_, callback) => process.nextTick(callback),
+    (_item, callback) => process.nextTick(callback),
     (err, result) => {
       t.is(err, null);
       t.true(result);
