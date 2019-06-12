@@ -6,11 +6,12 @@ function map(items, cps, done) {
     return;
   }
   const slots = new Array(items.length);
-  let [failed, backloggedCount] = [false, items.length];
+  let hasFailed = false;
+  let backloggedCount = items.length;
   const next = index => (err, data) => {
-    if (failed) return;
+    if (hasFailed) return;
     if (err) {
-      failed = true;
+      hasFailed = true;
       done(err, slots);
       return;
     }
@@ -44,11 +45,12 @@ function each(items, cps, done) {
     done(null);
     return;
   }
-  let [failed, backloggedCount] = [false, items.length];
+  let hasFailed = false;
+  let backloggedCount = items.length;
   const next = (err) => {
-    if (failed) return;
+    if (hasFailed) return;
     if (err) {
-      failed = true;
+      hasFailed = true;
       done(err);
       return;
     }
@@ -64,12 +66,13 @@ function every(items, cps, done) {
     done(null, true);
     return;
   }
-  let [failed, backloggedCount] = [false, items.length];
+  let hasNotAtLeastOneSatisfied = false;
+  let backloggedCount = items.length;
   const next = (err, accepted) => {
-    if (failed) return;
+    if (hasNotAtLeastOneSatisfied) return;
     if (err || !accepted) {
-      failed = true;
-      done(null, false);
+      hasNotAtLeastOneSatisfied = true;
+      done(err, false);
       return;
     }
     if (--backloggedCount <= 0) done(null, true);
@@ -84,19 +87,18 @@ function some(items, cps, done) {
     done(null, false);
     return;
   }
-  let satisfied = false;
+  let hasAtLeastOneSatisfied = false;
   let backloggedCount = items.length;
 
   const next = (_err, accepted) => {
-    if (satisfied) return;
+    if (hasAtLeastOneSatisfied) return;
     if (accepted) {
-      satisfied = true;
+      hasAtLeastOneSatisfied = true;
       done(null, true);
       return;
     }
     if (--backloggedCount <= 0) done(null, false);
   };
-
   for (const item of items) {
     cps(item, next);
   }
