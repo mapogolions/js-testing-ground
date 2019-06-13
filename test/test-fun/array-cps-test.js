@@ -8,31 +8,30 @@ const {
 } = require('../../src/fun/array-cps.js');
 
 
-test.cb('map with empty array', (t) => {
+test.cb('empty array mapping returns an empty array', (t) => {
   map(
     [],
     (item, callback) => process.nextTick(() => callback(null, item + 1)),
     (err, result) => {
+      t.is(err, null);
       t.deepEqual(result, []);
       t.end();
     },
   );
 });
 
-test.cb('map with error', (t) => {
-  const source = [1, 2, 3, 4];
-  const failure = new Error('Map error');
+test.cb('error occurrence stops mapping', (t) => {
+  const source = [-1, 0, 1, 2];
+  const failure = new Error('Greater than zero');
   map(
     source,
-    (item, callback) => {
-      process.nextTick(() => {
-        if (item === 2) {
-          callback(failure);
-          return;
-        }
-        callback(null, item);
-      });
-    },
+    (item, callback) => process.nextTick(() => {
+      if (item > 0) {
+        callback(failure);
+        return;
+      }
+      callback(null, item);
+    }),
     (err, result) => {
       t.is(err, failure);
       t.deepEqual(result, undefined);
@@ -48,13 +47,14 @@ test.cb('strings are mapped to numbers', (t) => {
     source,
     (item, callback) => process.nextTick(() => callback(null, item.length)),
     (err, result) => {
+      t.is(err, null);
       t.deepEqual(result, expected);
       t.end();
     },
   );
 });
 
-test.cb('different execution time', (t) => {
+test.cb('different execution time of callacks', (t) => {
   const source = [1, 2, 3, 4];
   const expected = source.map(x => x + 1);
   const even = x => x % 2 === 0;
@@ -69,7 +69,7 @@ test.cb('different execution time', (t) => {
   );
 });
 
-test.cb('filter with empty array', (t) => {
+test.cb('empty array filtering returns an empty array', (t) => {
   filter(
     [],
     (item, callback) => process.nextTick(() => callback(null, item > 0)),
@@ -83,16 +83,15 @@ test.cb('filter with empty array', (t) => {
 
 test.cb('ignores odd numbers', (t) => {
   const even = x => x % 2 === 0;
-  const failure = new Error('Fake error');
   filter(
     [1, 2, 3, 4],
-    (item, callback) => {
+    (item, callback) => process.nextTick(() => {
       if (even(item)) {
-        process.nextTick(() => callback(null, true));
-      } else {
-        process.nextTick(() => callback(failure));
+        callback(null, true);
+        return;
       }
-    },
+      callback(new Error('Odd number'));
+    }),
     (err, result) => {
       t.deepEqual(result, [2, 4]);
       t.is(err, null);
@@ -114,39 +113,44 @@ test.cb('ignores even numbers', (t) => {
   );
 });
 
-test.cb('each with empty', (t) => {
+test.cb('iteration over an empty array', (t) => {
+  const sideEffect = [];
   each(
     [],
-    (_item, callback) => process.nextTick(callback),
+    (item, callback) => process.nextTick(() => {
+      sideEffect.push(item);
+      callback(null);
+    }),
     (err) => {
       t.is(err, null);
+      t.deepEqual(sideEffect, []);
       t.end();
     },
   );
 });
 
-test.cb('each with error', (t) => {
+test.cb('error occurrence stops iteration', (t) => {
   const sideEffect = [];
   const failure = new Error('Negative number');
   each(
     [1, -2, 2, -3],
     (item, callback) => process.nextTick(() => {
+      sideEffect.push(item);
       if (item < 0) {
         callback(failure);
         return;
       }
-      sideEffect.push(item);
       callback(null);
     }),
     (err) => {
       t.is(err, failure);
-      t.deepEqual(sideEffect, [1]);
+      t.deepEqual(sideEffect, [1, -2]);
       t.end();
     },
   );
 });
 
-test.cb('push each item', (t) => {
+test.cb('successful iteration over an array', (t) => {
   const sideEffect = [];
   each(
     [1, 2, 3],
@@ -162,7 +166,7 @@ test.cb('push each item', (t) => {
   );
 });
 
-test.cb('every with empty array', (t) => {
+test.cb('empty array passes the test implemented by the provided function', (t) => {
   every(
     [],
     (_item, callback) => process.nextTick(callback),
@@ -174,7 +178,7 @@ test.cb('every with empty array', (t) => {
   );
 });
 
-test.cb('not each number is even', (t) => {
+test.cb('not each number in the array is even', (t) => {
   const even = x => x % 2 === 0;
   every(
     [2, 1, 6],
@@ -193,7 +197,7 @@ test.cb('not each number is even', (t) => {
   );
 });
 
-test.cb('each number is even', (t) => {
+test.cb('each number in the array is even', (t) => {
   const even = x => x % 2 === 0;
   every(
     [2, 4, 6],
@@ -212,13 +216,49 @@ test.cb('each number is even', (t) => {
   );
 });
 
-test.cb('some with empty', (t) => {
+test.cb('empty array does not pass the test implemented by the provided function', (t) => {
   some(
     [],
     (_item, callback) => process.nextTick(callback),
     (err, result) => {
       t.is(err, null);
       t.false(result);
+      t.end();
+    },
+  );
+});
+
+test.cb('array has at least one negative number', (t) => {
+  some(
+    [1, 2, -1, 0],
+    (item, callback) => process.nextTick(() => {
+      if (item < 0) {
+        callback(null, true);
+        return;
+      }
+      callback(null, false);
+    }),
+    (err, result) => {
+      t.is(err, null);
+      t.true(result);
+      t.end();
+    },
+  );
+});
+
+test.cb('errors will be ignored', (t) => {
+  some(
+    [1, 2, -1, 0],
+    (item, callback) => process.nextTick(() => {
+      if (item < 0) {
+        callback(null, true);
+        return;
+      }
+      callback(new Error('Positive number'));
+    }),
+    (err, result) => {
+      t.is(err, null);
+      t.true(result);
       t.end();
     },
   );

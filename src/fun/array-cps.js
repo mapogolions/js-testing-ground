@@ -89,7 +89,6 @@ function some(items, cps, done) {
   }
   let hasAtLeastOneSatisfied = false;
   let backloggedCount = items.length;
-
   const next = (_err, accepted) => {
     if (hasAtLeastOneSatisfied) return;
     if (accepted) {
