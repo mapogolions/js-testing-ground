@@ -1,3 +1,5 @@
 ## JS Testing Ground
 
-A place in which new ideas, constructions, fun stuffs etc, can be tried.
+The place in which new ideas, constructions, fun stuffs etc, can be tried.
+
+Unit Tests are **the Best** Documentation.
