@@ -1,3 +1,3 @@
-## FP in js
+## JS Testing Gound
 
-// Todo: add description
+A place in which new ideas, constructions, fun stuffs etc, can be tried.
