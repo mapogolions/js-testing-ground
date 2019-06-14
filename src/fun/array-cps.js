@@ -82,27 +82,6 @@ function every(items, cps, done) {
   }
 }
 
-function some(items, cps, done) {
-  if (!items.length) {
-    done(null, false);
-    return;
-  }
-  let hasAtLeastOneSatisfied = false;
-  let backloggedCount = items.length;
-  const next = (_err, accepted) => {
-    if (hasAtLeastOneSatisfied) return;
-    if (accepted) {
-      hasAtLeastOneSatisfied = true;
-      done(null, true);
-      return;
-    }
-    if (--backloggedCount <= 0) done(null, false);
-  };
-  for (const item of items) {
-    cps(item, next);
-  }
-}
-
 function findIndex(items, cps, done) {
   if (!items.length) {
     done(null, -1);
@@ -131,6 +110,16 @@ function find(items, cps, done) {
       return;
     }
     done(null, items[index]);
+  });
+}
+
+function some(items, cps, done) {
+  findIndex(items, cps, (_err, index) => {
+    if (index === -1) {
+      done(null, false);
+      return;
+    }
+    done(null, true);
   });
 }
 
