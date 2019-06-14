@@ -123,6 +123,35 @@ function some(items, cps, done) {
   });
 }
 
+function reduce(items, cps, done, seed) {
+  if (!items.length && !seed) {
+    done(new TypeError('Reduce of empty array with no initial value'));
+    return;
+  }
+  if (!items.length) {
+    done(null, seed);
+    return;
+  }
+  let index = seed ? 0 : 1;
+  let previous = seed || items[0];
+  let current = items[index];
+  const next = (err, acc) => {
+    if (err) {
+      done(err);
+      return;
+    }
+    if (index >= items.length) {
+      done(null, acc);
+      return;
+    }
+    index++;
+    previous = acc;
+    current = items[index];
+    next(previous, current, index, items, next);
+  };
+  cps(previous, current, index, items, next);
+}
+
 
 module.exports = {
   map,
@@ -132,4 +161,5 @@ module.exports = {
   some,
   findIndex,
   find,
+  reduce,
 };
