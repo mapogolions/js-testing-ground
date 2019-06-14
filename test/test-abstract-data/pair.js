@@ -8,7 +8,7 @@ test('returns an element from pair by index', (t) => {
   t.is(pair(2), 'b');
 });
 
-test('pair index start with one', (t) => {
+test('pair index starts with one', (t) => {
   const error = t.throws(() => Pair('one', 'two')(0), RangeError);
   t.is(error.message, 'Pair index out of range');
 });

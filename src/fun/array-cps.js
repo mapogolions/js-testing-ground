@@ -103,6 +103,37 @@ function some(items, cps, done) {
   }
 }
 
+function findIndex(items, cps, done) {
+  if (!items.length) {
+    done(null, -1);
+    return;
+  }
+  let hasFound = false;
+  let backloggedCount = items.length;
+  const next = index => (_err, accepted) => {
+    if (hasFound) return;
+    if (accepted) {
+      hasFound = true;
+      done(null, index);
+      return;
+    }
+    if (--backloggedCount <= 0) done(null, -1);
+  };
+  for (const [index, item] of items.entries()) {
+    cps(item, next(index));
+  }
+}
+
+function find(items, cps, done) {
+  findIndex(items, cps, (_err, index) => {
+    if (index === -1) {
+      done(null, undefined);
+      return;
+    }
+    done(null, items[index]);
+  });
+}
+
 
 module.exports = {
   map,
@@ -110,4 +141,6 @@ module.exports = {
   each,
   every,
   some,
+  findIndex,
+  find,
 };

@@ -5,6 +5,8 @@ const {
   each,
   every,
   some,
+  findIndex,
+  find,
 } = require('../../src/fun/array-cps.js');
 
 
@@ -259,6 +261,61 @@ test.cb('errors will be ignored', (t) => {
     (err, result) => {
       t.is(err, null);
       t.true(result);
+      t.end();
+    },
+  );
+});
+
+test.cb('not found index of positive number', (t) => {
+  findIndex(
+    [-2, -1],
+    (item, callback) => process.nextTick(() => {
+      if (item > 0) {
+        callback(null, true);
+        return;
+      }
+      callback(null, false);
+    }),
+    (err, result) => {
+      t.is(err, null);
+      t.is(result, -1);
+      t.end();
+    },
+  );
+});
+
+test.cb('find index of first occurrence of negative number', (t) => {
+  findIndex(
+    [2, -1, 3, -10],
+    (item, callback) => process.nextTick(() => {
+      if (item < 0) {
+        callback(null, true);
+        return;
+      }
+      callback(null, false);
+    }),
+    (err, result) => {
+      t.is(err, null);
+      t.is(result, 1);
+      t.end();
+    },
+  );
+});
+
+test.cb('find even number', (t) => {
+  const even = x => x % 2 === 0;
+  find(
+    [3, -1, 100],
+    (item, callback) => process.nextTick(() => {
+      if (even(item)) {
+        callback(null, true);
+        return;
+      }
+      callback(null, false);
+    }),
+    (err, result) => {
+      t.is(err, null);
+      t.is(result, 100);
       t.end();
     },
   );
