@@ -132,24 +132,23 @@ function reduce(items, cps, done, seed) {
     done(null, seed);
     return;
   }
-  let index = seed ? 0 : 1;
-  let previous = seed || items[0];
+  let index = seed !== undefined ? 0 : 1;
+  let previous = seed !== undefined ? seed : items[0];
   let current = items[index];
   const next = (err, acc) => {
     if (err) {
       done(err);
       return;
     }
-    if (index >= items.length) {
+    if (index >= items.length - 1) {
       done(null, acc);
       return;
     }
-    index++;
     previous = acc;
-    current = items[index];
-    next(previous, current, index, items, next);
+    current = items[++index];
+    cps(previous, current, next, index, items);
   };
-  cps(previous, current, index, items, next);
+  cps(previous, current, next, index, items);
 }
 
 
