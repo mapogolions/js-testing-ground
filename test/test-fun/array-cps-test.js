@@ -7,6 +7,7 @@ const {
   some,
   findIndex,
   find,
+  reduce,
 } = require('../../src/fun/array-cps.js');
 
 
@@ -318,5 +319,92 @@ test.cb('find even number', (t) => {
       t.is(result, 100);
       t.end();
     },
+  );
+});
+
+test.cb('reduce of empty array with no initial value', (t) => {
+  reduce(
+    [],
+    (prev, curr, callback) => process.nextTick(() => {
+      callback(null, prev + curr);
+    }),
+    (err, result) => {
+      t.is(result, undefined);
+      t.is(err.message, 'Reduce of empty array with no initial value');
+      t.end();
+    },
+    /* no initial value */
+  );
+});
+
+test.cb('reduce of empty array with initial value', (t) => {
+  const initial = 'Initial value';
+  reduce(
+    [],
+    (prev, curr, callback) => process.nextTick(() => {
+      callback(null, prev + curr);
+    }),
+    (err, result) => {
+      t.is(err, null);
+      t.is(result, initial);
+      t.end();
+    },
+    initial,
+  );
+});
+
+test.cb('reduce of an array with no initial value', (t) => {
+  const source = [1, 2, 3, 4];
+  const expected = 10;
+  reduce(
+    source,
+    (prev, curr, callback) => process.nextTick(() => {
+      callback(null, prev + curr);
+    }),
+    (err, result) => {
+      t.is(err, null);
+      t.is(result, expected);
+      t.end();
+    },
+    /* no initial value */
+  );
+});
+
+test.cb('reduce of an error with initial value', (t) => {
+  const source = [1, 2, 3, 4, 5];
+  const initial = 10;
+  const expected = 25;
+  reduce(
+    source,
+    (previous, current, callback) => process.nextTick(() => {
+      callback(null, previous + current);
+    }),
+    (err, result) => {
+      t.is(err, null);
+      t.is(result, expected);
+      t.end();
+    },
+    initial,
+  );
+});
+
+test.cb('reduce with error', (t) => {
+  const source = [0, 1, 2, 3];
+  const divisionByZeroError = new TypeError('Division by zero');
+  reduce(
+    source,
+    (prev, curr, callback) => process.nextTick(() => {
+      if (prev === 0) {
+        callback(divisionByZeroError);
+        return;
+      }
+      callback(null, curr / prev);
+    }),
+    (err, result) => {
+      t.is(err, divisionByZeroError);
+      t.is(result, undefined);
+      t.end();
+    },
+    /* no initial value */
   );
 });
