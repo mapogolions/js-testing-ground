@@ -18,16 +18,16 @@ test('should return 0-th index when one element array contains required element'
 });
 
 test('should return n-th index when array contains required element', t => {
-  t.is(1, binarySearch(10, [1, 10]));
-  t.is(2, binarySearch(3, [1, 2, 3, 4, 5]));
+  testCases.forEach(f => t.is(1, f(10, [1, 10])));
+  testCases.forEach(f => t.is(5, f(6, [1, 2, 3, 4, 5, 6, 7])));
 });
 
 test('should found element if it has first position', t => {
-  t.is(0, binarySearch(100, [100, 200, 300]));
-  t.is(0, binarySearch(3, [3, 4]));
+  testCases.forEach(f => t.is(0, f(100, [100, 200, 300])));
+  testCases.forEach(f => t.is(0, f(3, [3, 4])));
 });
 
 test('should found element if it has last position', t => {
-  t.is(2, binarySearch(300, [100, 200, 300]));
-  t.is(1, binarySearch(4, [3, 4]));
+  testCases.forEach(f => t.is(2, f(300, [100, 200, 300])));
+  testCases.forEach(f => t.is(1, f(4, [3, 4])));
 });
