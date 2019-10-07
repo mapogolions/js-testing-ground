@@ -16,7 +16,7 @@ test('should return 0-th index when one element array contains required element'
 });
 
 test('should return n-th index when array contains required element', t => {
-  t.is(1, binarySearch(10, [100, 10]));
+  t.is(0, binarySearch(10, [10, 100]));
   t.is(5, binarySearch(6, [1, 2, 3, 4, 5, 6, 7]));
 });
 
