@@ -1,19 +1,20 @@
 'use strict';
 
 const test = require('ava');
-const { binarySearch } = require('../../src/fun/binary-search');
+const { binarySearch, binarySearchOpt } = require('../../src/fun/binary-search');
 
+const testCases = [binarySearch, binarySearchOpt];
 
 test('should return -1 when array is empty', t => {
-  t.is(-1, binarySearch(10, []));
+  testCases.forEach(f => t.is(-1, f(10, [])));
 });
 
 test('should return -1 when array does not contain a required element', t => {
-  t.is(-1, binarySearch(10, Array.from({ length: 10 }, (_, i) => i)));
+  testCases.forEach(f => t.is(-1, f(10, [1, 2, 3])));
 });
 
 test('should return 0-th index when one element array contains required element', t => {
-  t.is(0, binarySearch(10, [10]));
+  testCases.forEach(f => t.is(0, f(10, [10])));
 });
 
 test('should return n-th index when array contains required element', t => {
