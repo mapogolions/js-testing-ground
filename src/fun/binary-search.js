@@ -13,6 +13,7 @@ function binarySearch(item, items, offset = 0) {
   return binarySearch(item, items.slice(middle), offset + middle);
 }
 
+// Unstable : Need to fix some bugs
 function binarySearchOpt(item, items) {
   const iter = (firstIndex, lastIndex) => {
     if (firstIndex > lastIndex) return -1;
