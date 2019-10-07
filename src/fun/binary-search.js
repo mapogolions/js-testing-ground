@@ -13,4 +13,15 @@ function binarySearch(item, items, offset = 0) {
   return binarySearch(item, items.slice(middle), offset + middle);
 }
 
-module.exports = { binarySearch };
+function binarySearchOpt(item, items) {
+  const iter = (first, last) => {
+    if (first > last) return -1;
+    const middle = Math.trunc((first + last) / 2);
+    if (item === items[middle]) return middle;
+    if (item < items[middle]) return iter(first, middle - 1);
+    return iter(middle + 1, last);
+  };
+  return iter(0, items.length - 1);
+}
+
+module.exports = { binarySearch, binarySearchOpt };
