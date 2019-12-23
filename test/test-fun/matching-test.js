@@ -11,6 +11,7 @@ test('follows', t => {
   t.is(match('()<>'), '()<>');
   t.false(match('()<'));
   t.false(match(''));
+  t.is(match('()<> '), '()<>');
 });
 
 test('just', t => {
