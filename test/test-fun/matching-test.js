@@ -1,6 +1,14 @@
 const test = require('ava');
-const { just, follows } = require ('../../src/fun/matching.js');
+const { just, follows, greedyCases } = require ('../../src/fun/matching.js');
 
+test('cases', t => {
+  const match = greedyCases(
+    just('he'),
+    just('hello')
+  );
+  t.is(match('hello world'), 'hello');
+  t.false(match(''));
+});
 
 test('follows', t => {
   const match = follows(
@@ -15,7 +23,7 @@ test('follows', t => {
 });
 
 test('just', t => {
-  t.is(just('(')('()'), '(');
-  t.is(just('<')('<<>'), '<');
-  t.false(just('<')('!<>'));
+  t.is(just('he')('hello'), 'he');
+  t.is(just('hel')('hello world'), 'hel');
+  t.false(just('hello')(' hello'));
 });

@@ -14,4 +14,12 @@ const follows = (...patterns) => source => {
   return source.slice(0, matchUpTo);
 };
 
-module.exports = { just, follows };
+const cases = strategy => (...patterns) => source => {
+  const matches = patterns.map(fn => fn(source)).filter(matched => matched);
+  if (!matches.length) return false;
+  return matches.sort(strategy)[0];
+};
+
+const greedyCases = cases((a, b) => a.length > b.length ? -1 : +1);
+
+module.exports = { just, follows, cases, greedyCases };
