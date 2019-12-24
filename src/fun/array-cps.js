@@ -1,5 +1,5 @@
-/* eslint-disable no-plusplus */
-/* eslint-disable no-restricted-syntax */
+'use strict';
+
 function map(items, cps, done) {
   if (!items.length) {
     done(null, []);

@@ -1,3 +1,5 @@
+'use strict';
+
 const test = require('ava');
 const {
   lens, view, set, over, remove,

@@ -1,4 +1,4 @@
-/* eslint-disable no-useless-computed-key */
+'use strict';
 
 /* const cons = (fst, snd) => f => f(fst, snd);
 const car = pair => pair((x, y) => x);

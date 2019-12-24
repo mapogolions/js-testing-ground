@@ -1,4 +1,5 @@
-/* eslint-disable space-infix-ops */
+'use strict';
+
 const requiredArgument = () => {
   throw new TypeError('Missing required positional argument');
 };

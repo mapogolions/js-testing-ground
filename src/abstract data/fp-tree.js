@@ -1,4 +1,5 @@
-/* eslint-disable no-shadow */
+'use strict';
+
 const List = require('./fp-list.js');
 const {
   car,

@@ -1,4 +1,5 @@
-/* eslint-disable no-shadow */
+'use strict';
+
 const lens = prop => ({
   get: instance => instance[prop],
   set: (value, instance) => ({ ...instance, [prop]: value }),

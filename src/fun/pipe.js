@@ -1,3 +1,5 @@
+'use strict';
+
 function pipe(obj) {
   const _ = f => {
     const value = f(obj);

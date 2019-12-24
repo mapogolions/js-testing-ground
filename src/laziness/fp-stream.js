@@ -1,4 +1,5 @@
-/* eslint-disable no-shadow */
+'use strict';
+
 const List = require('../abstract data/fp-list.js');
 const {
   cons,

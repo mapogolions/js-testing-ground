@@ -1,4 +1,5 @@
-/* eslint-disable no-use-before-define */
+'use strict';
+
 // Based on OCaml standart library
 class Option {
   match(f, g) {

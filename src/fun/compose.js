@@ -1,3 +1,5 @@
+'use strict';
+
 const compose = (g, f) => x => g(f(x));
 const composeAsync = (g, f) => async x => g(await f(x));
 

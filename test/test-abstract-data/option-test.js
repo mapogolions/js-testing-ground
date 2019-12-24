@@ -1,5 +1,6 @@
-const test = require('ava');
+'use strict';
 
+const test = require('ava');
 const { None, Some } = require('../../src/abstract data/option.js');
 
 

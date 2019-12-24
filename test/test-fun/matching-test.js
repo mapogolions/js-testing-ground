@@ -1,3 +1,5 @@
+'use strict';
+
 const test = require('ava');
 const { just, follows, greedyCases, balanced, isBalanced } = require ('../../src/fun/matching.js');
 

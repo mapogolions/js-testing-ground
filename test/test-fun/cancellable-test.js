@@ -1,3 +1,5 @@
+'use strict';
+
 const test = require('ava');
 const { cancellable, CancellablePromise } = require('../../src/fun/cancellable.js');
 

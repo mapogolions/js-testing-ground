@@ -1,3 +1,5 @@
+'use strict';
+
 const List = require('./fp-list.js');
 const {
   cons, nil, empty, car, cdr,

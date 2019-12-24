@@ -1,3 +1,5 @@
+'use strict';
+
 const test = require('ava');
 const partial = require('../../src/fun/partial.js');
 

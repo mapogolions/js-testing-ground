@@ -1,3 +1,5 @@
+'use strict';
+
 const test = require('ava');
 
 const Tree = require('../../src/abstract data/fp-tree.js');

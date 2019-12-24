@@ -1,3 +1,5 @@
+'use strict';
+
 const cancellable = (f) => {
   let cancelled = false;
   const wrapper = (...args) => (cancelled ? null : f(...args));

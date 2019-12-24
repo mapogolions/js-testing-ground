@@ -1,5 +1,5 @@
-/* eslint-disable no-use-before-define */
-/* eslint-disable no-shadow */
+'use strict';
+
 /**
  * Immutable single linked list (canonical definition)
  * type list 'a = Nil | Cons 'a * list 'a

@@ -1,3 +1,5 @@
+'use strict';
+
 const test = require('ava');
 const SetOrdered = require('../../src/abstract data/fp-set-ordered.js');
 const { list } = require('../../src/abstract data/cons.js');

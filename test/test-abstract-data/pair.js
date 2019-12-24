@@ -1,3 +1,5 @@
+'use strict';
+
 const test = require('ava');
 const { Pair, Tuple } = require('../../src/abstract data/pair.js');
 

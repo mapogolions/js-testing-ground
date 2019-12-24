@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * We use binary tree structure to define a little sorting algorithms.
  * A binary search tree has the property that all the values in the left branch are less than that

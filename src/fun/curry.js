@@ -1,3 +1,5 @@
+'use strict';
+
 function curry(f) {
   const arity = f.length;
   return function f1(...args) {

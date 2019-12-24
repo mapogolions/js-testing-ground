@@ -1,3 +1,5 @@
+'use strict';
+
 const { compose, composeAsync, composeCps } = require('./compose.js');
 
 
