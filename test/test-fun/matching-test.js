@@ -1,5 +1,27 @@
 const test = require('ava');
-const { just, follows, greedyCases } = require ('../../src/fun/matching.js');
+const { just, follows, greedyCases, balanced, isBalanced } = require ('../../src/fun/matching.js');
+
+test('is balanced', t => {
+  t.true(isBalanced('()'));
+  t.true(isBalanced('()()'));
+  t.true(isBalanced('(())'));
+  t.true(isBalanced('(()())()'));
+  t.false(isBalanced('('));
+  t.false(isBalanced(')'));
+  t.false(isBalanced('(()'));
+  t.false(isBalanced('()('));
+});
+
+test('balanced', t => {
+  t.is(balanced('()'), '()');
+  t.is(balanced('()()'), '()()');
+  t.is(balanced('(())'), '(())');
+  t.is(balanced('(()())()'), '(()())()');
+  t.false(balanced('('));
+  t.false(balanced(')'));
+  t.false(balanced('(()'));
+  t.is(balanced('()('), '()');
+});
 
 test('cases', t => {
   const match = greedyCases(

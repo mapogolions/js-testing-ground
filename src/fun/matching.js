@@ -22,4 +22,16 @@ const cases = strategy => (...patterns) => source => {
 
 const greedyCases = cases((a, b) => a.length > b.length ? -1 : +1);
 
-module.exports = { just, follows, cases, greedyCases };
+const balanced = source => greedyCases(
+  just('()'),
+  follows(just('()'), balanced),
+  follows(just('('), balanced, just(')')),
+  follows(just('('), balanced, just(')'), balanced)
+)(source);
+
+const isBalanced = source => {
+  const result = balanced(source);
+  return result ? source.length === result.length : result;
+};
+
+module.exports = { just, follows, cases, greedyCases, balanced, isBalanced };
