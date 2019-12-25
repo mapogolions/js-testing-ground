@@ -7,7 +7,7 @@
  * const empty = xs => Object.is(xs, nil);
  * const isPair = xs => typeof xs === 'function';
  */
-const CELL_SYMBOL = '@@__cons__@@';
+const CELL_SYMBOL = Symbol('@@__cons__@@');
 const nil = Object.freeze({ [CELL_SYMBOL]: false });
 const cons = (head, tail) => Object.freeze({ head, tail, [CELL_SYMBOL]: true });
 const car = ({ head }) => head;
