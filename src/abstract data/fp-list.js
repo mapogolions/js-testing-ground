@@ -95,6 +95,7 @@ const map = (f, xs) => foldr((h, t) => cons(f(h), t), nil, xs);
 const flatMap = (f, xs) => foldr((h, t) => append(f(h), t), nil, xs);
 const filter = (p, xs) => flatMap(x => (p(x) ? list(x) : list()), xs);
 const sameParity = xs => cons(car(xs), filter(x => x % 2 === car(xs) % 2, cdr(xs)));
+const transduce = (transformer, reducer, seed, xs) => foldl(transformer(reducer), seed, xs);
 
 
 module.exports = {
@@ -116,4 +117,5 @@ module.exports = {
   filter,
   lastPair,
   sameParity,
+  transduce
 };

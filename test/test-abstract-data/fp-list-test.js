@@ -14,6 +14,29 @@ const {
   empty,
 } = require('../../src/abstract data/cons.js');
 
+test('transducer 1', t => {
+  const testCases = [
+    {
+      xs: list(1, 2, 3),
+      seed: [],
+      reducer: (acc, x) => { acc.push(x); return acc; },
+      transformer: reducer => (acc, x) => reducer(acc, x + 1),
+      expected: [2, 3, 4]
+    },
+    {
+      xs: list('a', 'b', 'c'),
+      seed: '',
+      reducer: (acc, x) => acc === '' ? `${x}` : `${acc}-${x}`,
+      transformer: reducer => (acc, x) => reducer(acc, x.toUpperCase()),
+      expected: 'A-B-C'
+    }
+  ];
+
+  testCases.forEach(({ xs, seed, reducer, transformer, expected }) => {
+    const actual = List.transduce(transformer, reducer, seed, xs);
+    t.deepEqual(actual, expected);
+  });
+});
 
 test('method `List.zip`', (t) => {
   t.deepEqual(
