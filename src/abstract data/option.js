@@ -1,6 +1,6 @@
 'use strict';
 
-// Based on OCaml standart library
+// Based on OCaml standard library
 class Option {
   match(f, g) {
     if (this === None) return g(this);

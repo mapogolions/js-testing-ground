@@ -11,7 +11,7 @@ const {
 
 /**
  * Persistent single linked list (canonical definition).
- * It's recursive data structure.
+ * It's a recursive data structure.
  *  type list 'a = nil | cons 'a (list 'a)
  *   where - `nil` is marker of list end
  *
@@ -22,19 +22,19 @@ const {
  * (list 1 2 3 4)
  */
 
-const length = (pair) => {
+const length = pair => {
   const loop = (xs, count) => (empty(xs) ? count : loop(cdr(xs), count + 1));
   return loop(pair, 0);
 };
 
-const array = (xs) => {
+const array = xs => {
   const loop = (xs, acc) => (empty(xs) ? acc : loop(cdr(xs), [...acc, car(xs)]));
   return loop(xs, []);
 };
 
 const str = xs => `(${array(xs).join(' ')})`;
 
-const lastPair = (xs) => {
+const lastPair = xs => {
   if (empty(xs)) return xs;
   if (empty(cdr(xs))) return xs;
   return lastPair(cdr(xs));
