@@ -14,6 +14,11 @@ const {
   empty,
 } = require('../../src/abstract data/cons.js');
 
+test('repeat', t => {
+  t.is(List.str(List.repeat('a', 3)), '(a a a)');
+  t.is(List.str(List.repeat(1, 0)), '()');
+});
+
 test('transducer 1', t => {
   const testCases = [
     {
