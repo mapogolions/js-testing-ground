@@ -3,6 +3,7 @@
 const test = require('ava');
 
 const List = require('../../src/abstract data/fp-list.js');
+const Tree = require('../../src/abstract data/fp-tree.js');
 const pipe = require('../../src/fun/pipe.js');
 const curry = require('../../src/fun/curry.js');
 const {
@@ -13,6 +14,29 @@ const {
   nil,
   empty,
 } = require('../../src/abstract data/cons.js');
+
+
+test('compress', t => {
+  const testCases = [
+    {
+      input: list(1, 1, 0, 2, 2, 2, 1),
+      expected: '((2 1) 0 (3 2) 1)'
+    },
+    {
+      input: list(0, 0, 0, 0),
+      expected: '((4 0))'
+    },
+    {
+      input: list('a', 'b', 'c', 'c', 'c'),
+      expected: "(a b (3 c))"
+    }
+  ];
+
+  testCases.forEach(({ input, expected }) => {
+    const actual = Tree.str(List.compress(input));
+    t.is(actual, expected);
+  });
+});
 
 test('repeat', t => {
   t.is(List.str(List.repeat('a', 3)), '(a a a)');

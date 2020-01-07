@@ -99,16 +99,21 @@ const transduce = (transformer, reducer, seed, xs) => foldl(transformer(reducer)
 const repeat = (x, n) => list.apply(null, Array.from({ length: n }, () => x));
 
 
-// function compress(xs) {
-//   if (empty(xs)) return nil;
-//   function iter(count, current, coll) {
-//     if (empty(coll)) return nil; // repeat n-elts
-//     const next = car(coll);
-//     if (next === current) return iter(count + 1, current, cdr(coll));
-//     return cons();
-//   }
-//   return iter(1, car(xs), cdr(xs));
-// }
+function compress(xs) {
+  if (empty(xs)) return nil;
+  function iter(count, current, coll) {
+    if (empty(coll))
+      return count > 1 ? list(list(count, current)) : list(current);
+    const next = car(coll);
+    if (next === current)
+      return iter(count + 1, current, cdr(coll));
+    return cons(
+      count > 1 ? list(count, current) : current,
+      iter(1, next, cdr(coll))
+    );
+  }
+  return iter(1, car(xs), cdr(xs));
+}
 
 
 module.exports = {
@@ -131,5 +136,6 @@ module.exports = {
   lastPair,
   sameParity,
   transduce,
-  repeat
+  repeat,
+  compress,
 };
