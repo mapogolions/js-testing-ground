@@ -8,12 +8,11 @@ const {
   every,
   some,
   raceIndex,
-  find,
   reduce,
 } = require('../../src/fun/array-cps.js');
 
 
-test.cb('empty array mapping returns an empty array', (t) => {
+test.cb('map over an empty array should return an empty array', (t) => {
   map(
     [],
     (item, callback) => process.nextTick(() => callback(null, item + 1)),
@@ -25,7 +24,7 @@ test.cb('empty array mapping returns an empty array', (t) => {
   );
 });
 
-test.cb('error occurrence stops mapping', (t) => {
+test.cb('error should break mapping', (t) => {
   const source = [-1, 0, 1, 2];
   const failure = new Error('Greater than zero');
   map(
@@ -39,13 +38,13 @@ test.cb('error occurrence stops mapping', (t) => {
     }),
     (err, result) => {
       t.is(err, failure);
-      t.deepEqual(result, undefined);
+      t.is(result, undefined);
       t.end();
     },
   );
 });
 
-test.cb('strings are mapped to numbers', (t) => {
+test.cb('map strings to numbers', (t) => {
   const source = ['.', '..', '...'];
   const expected = [1, 2, 3];
   map(
@@ -59,16 +58,19 @@ test.cb('strings are mapped to numbers', (t) => {
   );
 });
 
-test.cb('different execution time of callacks', (t) => {
-  const source = [1, 2, 3, 4];
-  const expected = source.map(x => x + 1);
-  const even = x => x % 2 === 0;
+test.cb('map should have parallel semantics', (t) => {
+  const sideEffect = [];
   map(
-    source,
-    (item, callback) => setTimeout(() => callback(null, item + 1), even(item) ? 12 : 0),
-    (err, result) => {
-      t.deepEqual(result, expected);
-      t.is(err, null);
+    [1, 2, 3, 4],
+    (item, callback) => {
+      const delay = item % 2 === 0 ? 12 : 0;
+      setTimeout(() => {
+        sideEffect.push(item);
+        callback(null, item);
+      }, delay);
+    },
+    (_err, _result) => {
+      t.deepEqual(sideEffect, [1, 3, 2, 4]);
       t.end();
     },
   );
@@ -321,7 +323,7 @@ test.cb('reduce of empty array with no initial value should throw TypeError', (t
 });
 
 test.cb('reduce of empty array with initial value', (t) => {
-  const initial = 'Initial value';
+  const initial = Symbol();
   reduce(
     [],
     (prev, curr, callback) => process.nextTick(() => {
@@ -332,50 +334,44 @@ test.cb('reduce of empty array with initial value', (t) => {
       t.is(result, initial);
       t.end();
     },
-    initial,
+    initial
   );
 });
 
-test.cb('reduce of array with no initial value', (t) => {
-  const source = [1, 2, 3, 4];
-  const expected = 10;
+test.cb('reduce of array with no initial value', t => {
   reduce(
-    source,
+    [1, 2, 3, 4],
     (prev, curr, callback) => process.nextTick(() => {
       callback(null, prev + curr);
     }),
     (err, result) => {
       t.is(err, null);
-      t.is(result, expected);
+      t.is(result, 10);
       t.end();
     },
     /* no initial value */
   );
 });
 
-test.cb('reduce of array with initial value', (t) => {
-  const source = [1, 2, 3, 4, 5];
-  const initial = 10;
-  const expected = 25;
+test.cb('reduce of array with initial value', t => {
   reduce(
-    source,
+    [1, 2, 3, 4, 5],
     (previous, current, callback) => process.nextTick(() => {
       callback(null, previous + current);
     }),
     (err, result) => {
       t.is(err, null);
-      t.is(result, expected);
+      t.is(result, 25);
       t.end();
     },
-    initial,
+    10, /* initial value */
   );
 });
 
-test.cb('reduce with error', (t) => {
-  const source = [0, 1, 2, 3];
+test.cb('reduce with error', t => {
   const divisionByZeroError = new TypeError('Division by zero');
   reduce(
-    source,
+    [0, 1, 2, 4],
     (prev, curr, callback) => process.nextTick(() => {
       if (prev === 0) {
         callback(divisionByZeroError);
