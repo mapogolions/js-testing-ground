@@ -251,7 +251,25 @@ test.cb('`every` should return true when each number in array is even', t => {
   );
 });
 
-test.cb.skip('`every`should have parallel semantics', t => {
+test.cb('`every`should have parallel semantics', t => {
+  const sideEffect = [];
+  every(
+    [1, 2, 3, 4],
+    (item, callback) => {
+      const delay = 100 - (item * 10);
+      setTimeout(() => {
+        sideEffect.push(item);
+        callback(null, true);
+      }, delay);
+    },
+    (_err, _result) => {
+      t.deepEqual(sideEffect, [4, 3, 2, 1]);
+      t.end();
+    },
+  );
+});
+
+test.cb('`every`should be lazy', t => {
   const sideEffect = [];
   every(
     [1, 2, 3, 4],
@@ -263,7 +281,7 @@ test.cb.skip('`every`should have parallel semantics', t => {
       }, delay);
     },
     (_err, _result) => {
-      t.deepEqual(sideEffect, [4, 3, 2, 1]);
+      t.deepEqual(sideEffect, [4, 3]);
       t.end();
     },
   );
