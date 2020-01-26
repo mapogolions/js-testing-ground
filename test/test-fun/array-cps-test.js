@@ -7,7 +7,7 @@ const {
   each,
   every,
   some,
-  indexOfFirstCompleted,
+  raceFindIndex,
   reduce,
 } = require('../../src/fun/array-cps.js');
 
@@ -318,7 +318,7 @@ test.cb('`some` should ignore errors', t => {
 });
 
 test.cb('not found index of positive number', t => {
-  indexOfFirstCompleted(
+  raceFindIndex(
     [-2, -1],
     (item, callback) => process.nextTick(() => {
       if (item > 0) {
@@ -336,7 +336,7 @@ test.cb('not found index of positive number', t => {
 });
 
 test.cb('race index shoud return index of first completed result from set of non-blocking operations', (t) => {
-  indexOfFirstCompleted(
+  raceFindIndex(
     [2, -1, 3, -10],
     (item, callback) => process.nextTick(() => {
       if (item < 0) {
