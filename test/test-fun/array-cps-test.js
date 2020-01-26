@@ -287,7 +287,7 @@ test.cb('not found index of positive number', (t) => {
   );
 });
 
-test.cb('race index shoud return first occurrence', (t) => {
+test.cb('race index shoud return index of first completed result from set of non-blocking operations', (t) => {
   raceIndex(
     [2, -1, 3, -10],
     (item, callback) => process.nextTick(() => {
@@ -300,25 +300,6 @@ test.cb('race index shoud return first occurrence', (t) => {
     (err, result) => {
       t.is(err, null);
       t.is(result, 1);
-      t.end();
-    },
-  );
-});
-
-test.cb.skip('find even number', (t) => {
-  const even = x => x % 2 === 0;
-  find(
-    [3, -1, 100],
-    (item, callback) => process.nextTick(() => {
-      if (even(item)) {
-        callback(null, true);
-        return;
-      }
-      callback(null, false);
-    }),
-    (err, result) => {
-      t.is(err, null);
-      t.is(result, 100);
       t.end();
     },
   );
@@ -355,7 +336,7 @@ test.cb('reduce of empty array with initial value', (t) => {
   );
 });
 
-test.cb('reduce an array with no initial value', (t) => {
+test.cb('reduce of array with no initial value', (t) => {
   const source = [1, 2, 3, 4];
   const expected = 10;
   reduce(
@@ -372,7 +353,7 @@ test.cb('reduce an array with no initial value', (t) => {
   );
 });
 
-test.cb('reduce an array with initial value', (t) => {
+test.cb('reduce of array with initial value', (t) => {
   const source = [1, 2, 3, 4, 5];
   const initial = 10;
   const expected = 25;
