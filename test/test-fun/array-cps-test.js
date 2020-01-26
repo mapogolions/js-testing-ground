@@ -11,7 +11,7 @@ const {
   reduce,
 } = require('../../src/fun/array-cps.js');
 
-test.cb('map over an empty array should return an empty array', t => {
+test.cb('`map` over an empty array should return an empty array', t => {
   map(
     [],
     (item, callback) => process.nextTick(() => callback(null, item + 1)),
@@ -36,7 +36,7 @@ test.cb('error should break mapping', t => {
   );
 });
 
-test.cb('map strings to numbers', t => {
+test.cb('`map` strings to numbers', t => {
   map(
     ['.', '..', '...'],
     (item, callback) => process.nextTick(() => callback(null, item.length)),
@@ -48,7 +48,7 @@ test.cb('map strings to numbers', t => {
   );
 });
 
-test.cb('map should have parallel semantics', t => {
+test.cb('`map` should have parallel semantics', t => {
   const sideEffect = [];
   map(
     [1, 2, 3, 4],
@@ -78,7 +78,7 @@ test.cb('empty array filtering returns an empty array', t => {
   );
 });
 
-test.cb('filter should treat an error as false value', t => {
+test.cb('`filter` should treat an error as false value', t => {
   const even = x => x % 2 === 0;
   const failure = new Error('This error should be ignored');
   filter(
@@ -92,7 +92,7 @@ test.cb('filter should treat an error as false value', t => {
   );
 });
 
-test.cb('filter should ignore even numbers', t => {
+test.cb('`filter` should ignore even numbers', t => {
   const odd = x => x % 2 !== 0;
   filter(
     [1, 2, 3, 4, 5, 6],
@@ -105,7 +105,7 @@ test.cb('filter should ignore even numbers', t => {
   );
 });
 
-test.cb('filter should have parallel semantics', t => {
+test.cb('`filter` should have parallel semantics', t => {
   const sideEffect = [];
   filter(
     [1, 2, 3, 4],
@@ -176,7 +176,7 @@ test.cb('successful iteration over an array', t => {
   );
 });
 
-test.cb('each should have parallel semantics', t => {
+test.cb('`each` should have parallel semantics', t => {
   const sideEffect = [];
   each(
     [1, 2, 3, 4],
@@ -206,17 +206,24 @@ test.cb('empty array passes the test implemented by the provided function', t =>
   );
 });
 
-test.cb('not each number in the array is even', t => {
+test.cb('`every` should treat an error as false', t => {
+  const failure = new Error();
+  every(
+    [1, 2, -3, 5],
+    (item, callback) => process.nextTick(() => callback(item < 0 ? failure : null)),
+    (err, result) => {
+      t.is(err, null);
+      t.false(result);
+      t.end();
+    },
+  );
+});
+
+test.cb('`every` should return false when an array contains at least one odd number', t => {
   const even = x => x % 2 === 0;
   every(
     [2, 1, 6],
-    (item, callback) => process.nextTick(() => {
-      if (even(item)) {
-        callback(null, true);
-        return;
-      }
-      callback(null, false);
-    }),
+    (item, callback) => process.nextTick(() => callback(null, even(item))),
     (err, result) => {
       t.false(result);
       t.is(err, null);
@@ -225,7 +232,7 @@ test.cb('not each number in the array is even', t => {
   );
 });
 
-test.cb('each number in the array is even', t => {
+test.cb('`every` should return true when each number in array is even', t => {
   const even = x => x % 2 === 0;
   every(
     [2, 4, 6],
@@ -239,6 +246,24 @@ test.cb('each number in the array is even', t => {
     (err, result) => {
       t.true(result);
       t.is(err, null);
+      t.end();
+    },
+  );
+});
+
+test.cb.skip('`every`should have parallel semantics', t => {
+  const sideEffect = [];
+  every(
+    [1, 2, 3, 4],
+    (item, callback) => {
+      const delay = 100 - (item * 10);
+      setTimeout(() => {
+        sideEffect.push(item);
+        callback(null, item % 2 === 0);
+      }, delay);
+    },
+    (_err, _result) => {
+      t.deepEqual(sideEffect, [4, 3, 2, 1]);
       t.end();
     },
   );

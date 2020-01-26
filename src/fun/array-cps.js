@@ -83,38 +83,18 @@ function raceIndex(items, cps, done) {
 }
 
 function race(items, cps, done) {
-  raceIndex(items, cps, (err, index) => {
-    if (err) {
-      done(err);
-      return;
-    }
-    done(null, items[index]);
-  });
+  raceIndex(items, cps, (err, index) => err ? done(err) : done(null, items[index]));
 }
 
 function some(items, cps, done) {
-  raceIndex(items, cps, (_err, index) => {
-    if (index === -1) {
-      done(null, false);
-      return;
-    }
-    done(null, true);
-  });
+  raceIndex(items, cps, (_err, index) => done(null, index !== -1));
 }
 
-// cps : (item, callback) => callback(err)
-// cps : (item, callback) => callback(null, item > 0)
 function every(items, cps, done) {
   raceIndex(
     items,
     (item, callback) => cps(item, (err, accepted) => callback(err, !accepted)),
-    (_err, index) => {
-      if (index === -1) {
-        done(null, true);
-        return;
-      }
-      done(null, false);
-    }
+    (_err, index) => done(null, index === -1)
   );
 }
 
