@@ -61,7 +61,7 @@ function each(items, cps, done) {
   }
 }
 
-function raceIndex(items, cps, done) {
+function indexOfFirstCompleted(items, cps, done) {
   if (!items.length) {
     done(null, -1);
     return;
@@ -82,16 +82,12 @@ function raceIndex(items, cps, done) {
   }
 }
 
-function race(items, cps, done) {
-  raceIndex(items, cps, (_err, index) => index === -1 ? done(err) : done(null, items[index]));
-}
-
 function some(items, cps, done) {
-  raceIndex(items, cps, (_err, index) => done(null, index !== -1));
+  indexOfFirstCompleted(items, cps, (_err, index) => done(null, index !== -1));
 }
 
 function every(items, cps, done) {
-  raceIndex(
+  indexOfFirstCompleted(
     items,
     (item, callback) => cps(item, (err, accepted) => callback(err, !accepted)),
     (_err, index) => done(null, index === -1)
@@ -133,7 +129,6 @@ module.exports = {
   each,
   every,
   some,
-  raceIndex,
-  race,
+  indexOfFirstCompleted,
   reduce,
 };

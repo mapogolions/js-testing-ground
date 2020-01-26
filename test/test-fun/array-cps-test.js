@@ -7,7 +7,7 @@ const {
   each,
   every,
   some,
-  raceIndex,
+  indexOfFirstCompleted,
   reduce,
 } = require('../../src/fun/array-cps.js');
 
@@ -318,7 +318,7 @@ test.cb('`some` should ignore errors', t => {
 });
 
 test.cb('not found index of positive number', t => {
-  raceIndex(
+  indexOfFirstCompleted(
     [-2, -1],
     (item, callback) => process.nextTick(() => {
       if (item > 0) {
@@ -336,7 +336,7 @@ test.cb('not found index of positive number', t => {
 });
 
 test.cb('race index shoud return index of first completed result from set of non-blocking operations', (t) => {
-  raceIndex(
+  indexOfFirstCompleted(
     [2, -1, 3, -10],
     (item, callback) => process.nextTick(() => {
       if (item < 0) {
@@ -368,7 +368,7 @@ test.cb('reduce of empty array with no initial value should throw TypeError', (t
   );
 });
 
-test.cb('reduce of empty array with initial value', t => {
+test.cb('`reduce` of empty array with initial value', t => {
   const initial = Symbol();
   reduce(
     [],
@@ -384,7 +384,7 @@ test.cb('reduce of empty array with initial value', t => {
   );
 });
 
-test.cb('reduce of array with no initial value', t => {
+test.cb('`reduce` of array with no initial value', t => {
   reduce(
     [1, 2, 3, 4],
     (prev, curr, callback) => process.nextTick(() => {
@@ -399,7 +399,7 @@ test.cb('reduce of array with no initial value', t => {
   );
 });
 
-test.cb('reduce of array with initial value', t => {
+test.cb('`reduce` of array with initial value', t => {
   reduce(
     [1, 2, 3, 4, 5],
     (previous, current, callback) => process.nextTick(() => {
@@ -414,7 +414,7 @@ test.cb('reduce of array with initial value', t => {
   );
 });
 
-test.cb('reduce with error', t => {
+test.cb('`reduce` with error', t => {
   const divisionByZeroError = new TypeError('Division by zero');
   reduce(
     [0, 1, 2, 4],
