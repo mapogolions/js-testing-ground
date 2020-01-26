@@ -11,8 +11,7 @@ const {
   reduce,
 } = require('../../src/fun/array-cps.js');
 
-
-test.cb('map over an empty array should return an empty array', (t) => {
+test.cb('map over an empty array should return an empty array', t => {
   map(
     [],
     (item, callback) => process.nextTick(() => callback(null, item + 1)),
@@ -24,18 +23,11 @@ test.cb('map over an empty array should return an empty array', (t) => {
   );
 });
 
-test.cb('error should break mapping', (t) => {
-  const source = [-1, 0, 1, 2];
+test.cb('error should break mapping', t => {
   const failure = new Error('Greater than zero');
   map(
-    source,
-    (item, callback) => process.nextTick(() => {
-      if (item > 0) {
-        callback(failure);
-        return;
-      }
-      callback(null, item);
-    }),
+    [-1, 0, 1, 2],
+    (item, callback) => process.nextTick(() => item > 0 ? callback(failure) : callback(null, item)),
     (err, result) => {
       t.is(err, failure);
       t.is(result, undefined);
@@ -44,21 +36,19 @@ test.cb('error should break mapping', (t) => {
   );
 });
 
-test.cb('map strings to numbers', (t) => {
-  const source = ['.', '..', '...'];
-  const expected = [1, 2, 3];
+test.cb('map strings to numbers', t => {
   map(
-    source,
+    ['.', '..', '...'],
     (item, callback) => process.nextTick(() => callback(null, item.length)),
     (err, result) => {
       t.is(err, null);
-      t.deepEqual(result, expected);
+      t.deepEqual(result, [1, 2, 3]);
       t.end();
     },
   );
 });
 
-test.cb('map should have parallel semantics', (t) => {
+test.cb('map should have parallel semantics', t => {
   const sideEffect = [];
   map(
     [1, 2, 3, 4],
@@ -76,7 +66,7 @@ test.cb('map should have parallel semantics', (t) => {
   );
 });
 
-test.cb('empty array filtering returns an empty array', (t) => {
+test.cb('empty array filtering returns an empty array', t => {
   filter(
     [],
     (item, callback) => process.nextTick(() => callback(null, item > 0)),
@@ -88,17 +78,12 @@ test.cb('empty array filtering returns an empty array', (t) => {
   );
 });
 
-test.cb('ignores odd numbers', (t) => {
+test.cb('filter should treat an error as false value', t => {
   const even = x => x % 2 === 0;
+  const failure = new Error('This error should be ignored');
   filter(
     [1, 2, 3, 4],
-    (item, callback) => process.nextTick(() => {
-      if (even(item)) {
-        callback(null, true);
-        return;
-      }
-      callback(new Error('Odd number'));
-    }),
+    (item, callback) => process.nextTick(() => even(item) ? callback(null, true) : callback(failure)),
     (err, result) => {
       t.deepEqual(result, [2, 4]);
       t.is(err, null);
@@ -107,7 +92,7 @@ test.cb('ignores odd numbers', (t) => {
   );
 });
 
-test.cb('ignores even numbers', (t) => {
+test.cb('filter should ignore even numbers', t => {
   const odd = x => x % 2 !== 0;
   filter(
     [1, 2, 3, 4, 5, 6],
@@ -120,7 +105,25 @@ test.cb('ignores even numbers', (t) => {
   );
 });
 
-test.cb('iteration over an empty array', (t) => {
+test.cb('filter should have parallel semantics', t => {
+  const sideEffect = [];
+  filter(
+    [1, 2, 3, 4],
+    (item, callback) => {
+      const delay = item % 2 === 0 ? 12 : 0;
+      setTimeout(() => {
+        sideEffect.push(item);
+        callback(null, item > 0);
+      }, delay);
+    },
+    (_err, _result) => {
+      t.deepEqual(sideEffect, [1, 3, 2, 4]);
+      t.end();
+    },
+  );
+});
+
+test.cb('iteration over an empty array', t => {
   const sideEffect = [];
   each(
     [],
@@ -136,7 +139,7 @@ test.cb('iteration over an empty array', (t) => {
   );
 });
 
-test.cb('error occurrence stops iteration', (t) => {
+test.cb('error occurrence stops iteration', t => {
   const sideEffect = [];
   const failure = new Error('Negative number');
   each(
@@ -157,7 +160,7 @@ test.cb('error occurrence stops iteration', (t) => {
   );
 });
 
-test.cb('successful iteration over an array', (t) => {
+test.cb('successful iteration over an array', t => {
   const sideEffect = [];
   each(
     [1, 2, 3],
@@ -173,7 +176,7 @@ test.cb('successful iteration over an array', (t) => {
   );
 });
 
-test.cb('empty array passes the test implemented by the provided function', (t) => {
+test.cb('empty array passes the test implemented by the provided function', t => {
   every(
     [],
     (_item, callback) => process.nextTick(callback),
@@ -185,7 +188,7 @@ test.cb('empty array passes the test implemented by the provided function', (t) 
   );
 });
 
-test.cb('not each number in the array is even', (t) => {
+test.cb('not each number in the array is even', t => {
   const even = x => x % 2 === 0;
   every(
     [2, 1, 6],
@@ -204,7 +207,7 @@ test.cb('not each number in the array is even', (t) => {
   );
 });
 
-test.cb('each number in the array is even', (t) => {
+test.cb('each number in the array is even', t => {
   const even = x => x % 2 === 0;
   every(
     [2, 4, 6],
@@ -223,7 +226,7 @@ test.cb('each number in the array is even', (t) => {
   );
 });
 
-test.cb('empty array does not pass the test implemented by the provided function', (t) => {
+test.cb('empty array does not pass the test implemented by the provided function', t => {
   some(
     [],
     (_item, callback) => process.nextTick(callback),
@@ -235,7 +238,7 @@ test.cb('empty array does not pass the test implemented by the provided function
   );
 });
 
-test.cb('`some` should return at least one ', (t) => {
+test.cb('`some` should return at least one ', t => {
   some(
     [1, 2, -1, 0],
     (item, callback) => process.nextTick(() => {
@@ -253,7 +256,7 @@ test.cb('`some` should return at least one ', (t) => {
   );
 });
 
-test.cb('`some` should ignore errors', (t) => {
+test.cb('`some` should ignore errors', t => {
   some(
     [1, 2, -1, 0],
     (item, callback) => process.nextTick(() => {
@@ -271,7 +274,7 @@ test.cb('`some` should ignore errors', (t) => {
   );
 });
 
-test.cb('not found index of positive number', (t) => {
+test.cb('not found index of positive number', t => {
   raceIndex(
     [-2, -1],
     (item, callback) => process.nextTick(() => {
@@ -322,7 +325,7 @@ test.cb('reduce of empty array with no initial value should throw TypeError', (t
   );
 });
 
-test.cb('reduce of empty array with initial value', (t) => {
+test.cb('reduce of empty array with initial value', t => {
   const initial = Symbol();
   reduce(
     [],
