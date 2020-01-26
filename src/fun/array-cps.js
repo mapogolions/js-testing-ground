@@ -61,28 +61,7 @@ function each(items, cps, done) {
   }
 }
 
-function every(items, cps, done) {
-  if (!items.length) {
-    done(null, true);
-    return;
-  }
-  let hasNotAtLeastOneSatisfied = false;
-  let backloggedCount = items.length;
-  const next = (err, accepted) => {
-    if (hasNotAtLeastOneSatisfied) return;
-    if (err || !accepted) {
-      hasNotAtLeastOneSatisfied = true;
-      done(err, false);
-      return;
-    }
-    if (--backloggedCount <= 0) done(null, true);
-  };
-  for (const item of items) {
-    cps(item, next);
-  }
-}
-
-function findIndex(items, cps, done) {
+function raceIndex(items, cps, done) {
   if (!items.length) {
     done(null, -1);
     return;
@@ -103,8 +82,18 @@ function findIndex(items, cps, done) {
   }
 }
 
+function race(items, cps, done) {
+  raceIndex(items, cps, (err, index) => {
+    if (err) {
+      done(err);
+      return;
+    }
+    done(null, items[index]);
+  });
+}
+
 function find(items, cps, done) {
-  findIndex(items, cps, (_err, index) => {
+  raceIndex(items, cps, (_err, index) => {
     if (index === -1) {
       done(null, undefined);
       return;
@@ -114,13 +103,29 @@ function find(items, cps, done) {
 }
 
 function some(items, cps, done) {
-  findIndex(items, cps, (_err, index) => {
+  raceIndex(items, cps, (_err, index) => {
     if (index === -1) {
       done(null, false);
       return;
     }
     done(null, true);
   });
+}
+
+// cps : (item, callback) => callback(err)
+// cps : (item, callback) => callback(null, item > 0)
+function every(items, cps, done) {
+  raceIndex(
+    items,
+    (item, callback) => cps(item, (err, accepted) => callback(err, !accepted)),
+    (_err, index) => {
+      if (index === -1) {
+        done(null, true);
+        return;
+      }
+      done(null, false);
+    }
+  );
 }
 
 function reduce(items, cps, done, seed) {
@@ -158,7 +163,8 @@ module.exports = {
   each,
   every,
   some,
-  findIndex,
+  raceIndex,
+  race,
   find,
   reduce,
 };

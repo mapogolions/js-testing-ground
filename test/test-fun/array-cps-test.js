@@ -7,7 +7,7 @@ const {
   each,
   every,
   some,
-  findIndex,
+  raceIndex,
   find,
   reduce,
 } = require('../../src/fun/array-cps.js');
@@ -233,7 +233,7 @@ test.cb('empty array does not pass the test implemented by the provided function
   );
 });
 
-test.cb('array has at least one negative number', (t) => {
+test.cb('`some` should return at least one ', (t) => {
   some(
     [1, 2, -1, 0],
     (item, callback) => process.nextTick(() => {
@@ -251,7 +251,7 @@ test.cb('array has at least one negative number', (t) => {
   );
 });
 
-test.cb('errors will be ignored', (t) => {
+test.cb('`some` should ignore errors', (t) => {
   some(
     [1, 2, -1, 0],
     (item, callback) => process.nextTick(() => {
@@ -270,7 +270,7 @@ test.cb('errors will be ignored', (t) => {
 });
 
 test.cb('not found index of positive number', (t) => {
-  findIndex(
+  raceIndex(
     [-2, -1],
     (item, callback) => process.nextTick(() => {
       if (item > 0) {
@@ -287,8 +287,8 @@ test.cb('not found index of positive number', (t) => {
   );
 });
 
-test.cb('find index of first occurrence of negative number', (t) => {
-  findIndex(
+test.cb('race index shoud return first occurrence', (t) => {
+  raceIndex(
     [2, -1, 3, -10],
     (item, callback) => process.nextTick(() => {
       if (item < 0) {
@@ -305,7 +305,7 @@ test.cb('find index of first occurrence of negative number', (t) => {
   );
 });
 
-test.cb('find even number', (t) => {
+test.cb.skip('find even number', (t) => {
   const even = x => x % 2 === 0;
   find(
     [3, -1, 100],
@@ -355,7 +355,7 @@ test.cb('reduce of empty array with initial value', (t) => {
   );
 });
 
-test.cb('reduce of an array with no initial value', (t) => {
+test.cb('reduce an array with no initial value', (t) => {
   const source = [1, 2, 3, 4];
   const expected = 10;
   reduce(
@@ -372,7 +372,7 @@ test.cb('reduce of an array with no initial value', (t) => {
   );
 });
 
-test.cb('reduce of an error with initial value', (t) => {
+test.cb('reduce an array with initial value', (t) => {
   const source = [1, 2, 3, 4, 5];
   const initial = 10;
   const expected = 25;
