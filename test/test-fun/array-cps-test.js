@@ -305,7 +305,7 @@ test.cb('race index shoud return index of first completed result from set of non
   );
 });
 
-test.cb('reduce of empty array with no initial value', (t) => {
+test.cb('reduce of empty array with no initial value should throw TypeError', (t) => {
   reduce(
     [],
     (prev, curr, callback) => process.nextTick(() => {
@@ -313,7 +313,7 @@ test.cb('reduce of empty array with no initial value', (t) => {
     }),
     (err, result) => {
       t.is(result, undefined);
-      t.is(err.message, 'Reduce of empty array with no initial value');
+      t.true(err instanceof TypeError);
       t.end();
     },
     /* no initial value */

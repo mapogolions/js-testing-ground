@@ -92,16 +92,6 @@ function race(items, cps, done) {
   });
 }
 
-function find(items, cps, done) {
-  raceIndex(items, cps, (_err, index) => {
-    if (index === -1) {
-      done(null, undefined);
-      return;
-    }
-    done(null, items[index]);
-  });
-}
-
 function some(items, cps, done) {
   raceIndex(items, cps, (_err, index) => {
     if (index === -1) {
@@ -165,6 +155,5 @@ module.exports = {
   some,
   raceIndex,
   race,
-  find,
   reduce,
 };
