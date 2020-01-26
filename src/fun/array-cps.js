@@ -83,7 +83,7 @@ function raceIndex(items, cps, done) {
 }
 
 function race(items, cps, done) {
-  raceIndex(items, cps, (err, index) => err ? done(err) : done(null, items[index]));
+  raceIndex(items, cps, (_err, index) => index === -1 ? done(err) : done(null, items[index]));
 }
 
 function some(items, cps, done) {
