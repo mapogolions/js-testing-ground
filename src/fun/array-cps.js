@@ -82,6 +82,14 @@ function raceFindIndex(items, cps, done) {
   }
 }
 
+function findIndex(items, cps, done) {
+  // todo: should have sequential semantics | ignore errors
+}
+
+function find(items, cps, done) {
+  // todo: should have sequential semantics | ignore errors
+}
+
 function raceFind(items, cps, done) {
   raceFindIndex(items, cps, (_err, index) => index === -1 ? done(null) : done(null, items[index]));
 }
