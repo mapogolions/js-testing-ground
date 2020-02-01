@@ -91,15 +91,18 @@ function raceFindIndex(items, cps, done) {
 }
 
 function raceFind(items, cps, done) {
-  raceFindIndex(items, cps, (_err, index) => index === -1 ? done(null) : done(null, items[index]));
+  const complete = (_err, index) => index === -1 ? done(null) : done(null, items[index]);
+  raceFindIndex(items, cps, complete);
 }
 
 function findIndexOps(items, cps, done) { // run parallel, but result as sequential
-  slotsWithResultsParallel(items, cps, (_err, items) => items.length > 0 ? 0 : -1);
+  const complete = (_err, items) => items.length > 0 ? 0 : -1;
+  slotsWithResultsParallel(items, cps, complete);
 }
 
 function findOps(items, cps, done) {
-  findIndexOps(items, cps, (_err, index) => index === -1 ? done(null) : done(null, items[index]))
+  const complete = (_err, index) => index === -1 ? done(null) : done(null, items[index]);
+  findIndexOps(items, cps, complete);
 }
 
 function findIndex(items, cps, done) {
@@ -123,11 +126,13 @@ function findIndex(items, cps, done) {
 }
 
 function find(items, cps, done) {
-  findIndex(items, cps, (_err, index) => index === -1 ? done(null) : done(null, items[index]));
+  const complete = (_err, index) => index === -1 ? done(null) : done(null, items[index]);
+  findIndex(items, cps, complete);
 }
 
 function some(items, cps, done) {
-  raceFindIndex(items, cps, (_err, index) => done(null, index !== -1));
+  const complete = (_err, index) => done(null, index !== -1)
+  raceFindIndex(items, cps, complete);
 }
 
 function every(items, cps, done) {
