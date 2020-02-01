@@ -19,7 +19,7 @@ test.cb('`some` should ignore an error', t => {
   const failure = new Error('Some error');
   some(
     [1, 2, -1, 0],
-    (item, callback) => process.nextTick(() => {
+    (item, callback) => setTimeout(() => {
       if (item < 0) {
         callback(null, true);
         return;
@@ -37,7 +37,7 @@ test.cb('`some` should ignore an error', t => {
 test.cb('`some` should return true when at least one element is a negative number', t => {
   some(
     [1, 2, -1, 0],
-    (item, callback) => process.nextTick(() => callback(null, item < 0)),
+    (item, callback) => setTimeout(() => callback(null, item < 0)),
     (err, result) => {
       t.is(err, null);
       t.true(result);

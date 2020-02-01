@@ -95,8 +95,11 @@ function raceFind(items, cps, done) {
   raceFindIndex(items, cps, complete);
 }
 
-function findIndexOps(items, cps, done) { // run parallel, but result as sequential
-  const complete = (_err, items) => items.length > 0 ? 0 : -1;
+function findIndexOps(items, cps, done) {
+  const complete = (_err, slots) => {
+    var index = slots.findIndex(it => it !== FALSE_OR_ERROR);
+    done(null, index);
+  }
   slotsWithResultsParallel(items, cps, complete);
 }
 
@@ -183,6 +186,6 @@ module.exports = {
   findIndex,
   find,
   findIndexOps,
-  findIndex,
+  findOps,
   reduce,
 };
