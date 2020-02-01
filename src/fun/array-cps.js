@@ -23,21 +23,29 @@ function map(items, cps, done) {
   }
 }
 
-function filter(items, cps, done) {
+const FALSE_OR_ERROR = Symbol('FALSE OR ERROR');
+
+function slotsWithResultsParallel(items, cps, done) {
   if (!items.length) {
     done(null, []);
     return;
   }
-  const IGNORE = Symbol('Missed element');
   const slots = new Array(items.length);
   let backloggedCount = items.length;
   const next = index => (err, accepted) => {
-    slots[index] = (err || !accepted) ? IGNORE : items[index];
-    if (--backloggedCount <= 0) done(null, slots.filter(x => x !== IGNORE));
+    slots[index] = (err || !accepted) ? FALSE_OR_ERROR : items[index];
+    if (--backloggedCount <= 0) done(null, slots);
   };
   for (const [index, item] of items.entries()) {
     cps(item, next(index));
   }
+}
+
+function filter(items, cps, done) {
+  slotsWithResultsParallel(
+    items,
+    cps,
+    (_err, slots) => done(null, slots.filter(it => it !== FALSE_OR_ERROR)))
 }
 
 function each(items, cps, done) {
@@ -82,6 +90,18 @@ function raceFindIndex(items, cps, done) {
   }
 }
 
+function raceFind(items, cps, done) {
+  raceFindIndex(items, cps, (_err, index) => index === -1 ? done(null) : done(null, items[index]));
+}
+
+function findIndexOps(items, cps, done) { // run parallel, but result as sequential
+  slotsWithResultsParallel(items, cps, (_err, items) => items.length > 0 ? 0 : -1);
+}
+
+function findOps(items, cps, done) {
+  findIndexOps(items, cps, (_err, index) => index === -1 ? done(null) : done(null, items[index]))
+}
+
 function findIndex(items, cps, done) {
   if (!items.length) {
     done(null, -1);
@@ -104,10 +124,6 @@ function findIndex(items, cps, done) {
 
 function find(items, cps, done) {
   findIndex(items, cps, (_err, index) => index === -1 ? done(null) : done(null, items[index]));
-}
-
-function raceFind(items, cps, done) {
-  raceFindIndex(items, cps, (_err, index) => index === -1 ? done(null) : done(null, items[index]));
 }
 
 function some(items, cps, done) {
@@ -161,5 +177,7 @@ module.exports = {
   raceFind,
   findIndex,
   find,
+  findIndexOps,
+  findIndex,
   reduce,
 };
