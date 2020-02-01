@@ -83,11 +83,27 @@ function raceFindIndex(items, cps, done) {
 }
 
 function findIndex(items, cps, done) {
-  // todo: should have sequential semantics | ignore errors
+  if (!items.length) {
+    done(null, -1);
+    return;
+  }
+  let index = 0;
+  const next = (_err, accepted) => {
+    if (accepted) {
+      done(null, index);
+      return;
+    }
+    if (++index >= items.length) {
+      done(null, -1);
+      return;
+    }
+    cps(items[index], next);
+  };
+  cps(items[index], next);
 }
 
 function find(items, cps, done) {
-  // todo: should have sequential semantics | ignore errors
+  findIndex(items, cps, (_err, index) => index === -1 ? done(null) : done(null, items[index]));
 }
 
 function raceFind(items, cps, done) {
@@ -143,5 +159,7 @@ module.exports = {
   some,
   raceFindIndex,
   raceFind,
+  findIndex,
+  find,
   reduce,
 };
