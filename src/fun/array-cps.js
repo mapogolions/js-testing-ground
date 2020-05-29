@@ -3,7 +3,7 @@
 
 const FALSE_OR_ERROR = Symbol('FALSE_OR_ERROR');
 
-function collectOrMarkError(items, done) {
+function collectOrMark(items, done) {
   const slots = new Array(items.length);
   let backloggedCount = items.length;
   return index => (err, accepted) => {
@@ -28,28 +28,18 @@ function collectOrFall(items, done) {
   };
 }
 
-function parallel(next) {
-  return function (items, cps, done) {
-    if (!items.length) {
-      done(null, []);
+function peekOrFall(items, done) {
+  let hasFound = false;
+  let backloggedCount = items.length;
+  return index => (_err, accepted) => {
+    if (hasFound) return;
+    if (accepted) {
+      hasFound = true;
+      done(null, index);
       return;
     }
-    const fn = next(items, done);
-    for (const [index, elem] of items.entries()) {
-      cps(elem, fn(index));
-    }
+    if (--backloggedCount <= 0) done(null, -1);
   };
-}
-
-function map(items, cps, done) {
-  const flow = parallel(collectOrFall);
-  flow(items, cps, done);
-}
-
-function filter(items, cps, done) {
-  const complete = (_err, slots) => done(null, slots.filter(it => it !== FALSE_OR_ERROR));
-  const flow = parallel(collectOrMarkError);
-  flow(items, cps, complete);
 }
 
 function applyOrFall(items, done) {
@@ -66,30 +56,38 @@ function applyOrFall(items, done) {
   };
 }
 
+function parallel(next, seed) {
+  return function (items, cps, done) {
+    if (!items.length) {
+      done(null, seed);
+      return;
+    }
+    const fn = next(items, done);
+    for (const [index, elem] of items.entries()) {
+      cps(elem, fn(index));
+    }
+  };
+}
+
+function map(items, cps, done) {
+  const flow = parallel(collectOrFall, []);
+  flow(items, cps, done);
+}
+
+function filter(items, cps, done) {
+  const complete = (_err, slots) => done(null, slots.filter(it => it !== FALSE_OR_ERROR));
+  const flow = parallel(collectOrMark, []);
+  flow(items, cps, complete);
+}
+
 function each(items, cps, done) {
   const flow = parallel(applyOrFall);
   flow(items, cps, done);
 }
 
 function raceFindIndex(items, cps, done) {
-  if (!items.length) {
-    done(null, -1);
-    return;
-  }
-  let hasFound = false;
-  let backloggedCount = items.length;
-  const next = index => (_err, accepted) => {
-    if (hasFound) return;
-    if (accepted) {
-      hasFound = true;
-      done(null, index);
-      return;
-    }
-    if (--backloggedCount <= 0) done(null, -1);
-  };
-  for (const [index, item] of items.entries()) {
-    cps(item, next(index));
-  }
+  const flow = parallel(peekOrFall, -1);
+  flow(items, cps, done);
 }
 
 function raceFind(items, cps, done) {
@@ -102,7 +100,7 @@ function findIndexOps(items, cps, done) {
     var index = slots.findIndex(it => it !== FALSE_OR_ERROR);
     done(null, index);
   }
-  const flow = parallel(collectOrMarkError);
+  const flow = parallel(collectOrMark, []);
   flow(items, cps, complete);
 }
 
