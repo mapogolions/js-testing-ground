@@ -1,14 +1,22 @@
 'use strict';
 
-function map(items, cps, done) {
-  if (!items.length) {
-    done(null, []);
-    return;
-  }
+
+const FALSE_OR_ERROR = Symbol('FALSE_OR_ERROR');
+
+function collectOrMarkError(items, done) {
   const slots = new Array(items.length);
-  let hasFailed = false;
   let backloggedCount = items.length;
-  const next = index => (err, data) => {
+  return index => (err, accepted) => {
+    slots[index] = (err || !accepted) ? FALSE_OR_ERROR : items[index];
+    if (--backloggedCount <= 0) done(null, slots);
+  };
+}
+
+function collectOrFall(items, done) {
+  const slots = new Array(items.length);
+  let backloggedCount = items.length;
+  let hasFailed = false;
+  return index => (err, data) => {
     if (hasFailed) return;
     if (err) {
       hasFailed = true;
@@ -18,44 +26,36 @@ function map(items, cps, done) {
     slots[index] = data;
     if (--backloggedCount <= 0) done(null, slots);
   };
-  for (const [index, elem] of items.entries()) {
-    cps(elem, next(index));
-  }
 }
 
-const FALSE_OR_ERROR = Symbol('FALSE OR ERROR');
-
-function slotsWithResultsParallel(items, cps, done) {
-  if (!items.length) {
-    done(null, []);
-    return;
-  }
-  const slots = new Array(items.length);
-  let backloggedCount = items.length;
-  const next = index => (err, accepted) => {
-    slots[index] = (err || !accepted) ? FALSE_OR_ERROR : items[index];
-    if (--backloggedCount <= 0) done(null, slots);
+function parallel(next) {
+  return function (items, cps, done) {
+    if (!items.length) {
+      done(null, []);
+      return;
+    }
+    const fn = next(items, done);
+    for (const [index, elem] of items.entries()) {
+      cps(elem, fn(index));
+    }
   };
-  for (const [index, item] of items.entries()) {
-    cps(item, next(index));
-  }
+}
+
+function map(items, cps, done) {
+  const flow = parallel(collectOrFall);
+  flow(items, cps, done);
 }
 
 function filter(items, cps, done) {
-  slotsWithResultsParallel(
-    items,
-    cps,
-    (_err, slots) => done(null, slots.filter(it => it !== FALSE_OR_ERROR)))
+  const complete = (_err, slots) => done(null, slots.filter(it => it !== FALSE_OR_ERROR));
+  const flow = parallel(collectOrMarkError);
+  flow(items, cps, complete);
 }
 
-function each(items, cps, done) {
-  if (!items.length) {
-    done(null);
-    return;
-  }
+function applyOrFall(items, done) {
   let hasFailed = false;
   let backloggedCount = items.length;
-  const next = (err) => {
+  return _index => err => {
     if (hasFailed) return;
     if (err) {
       hasFailed = true;
@@ -64,9 +64,11 @@ function each(items, cps, done) {
     }
     if (--backloggedCount <= 0) done(null);
   };
-  for (const item of items) {
-    cps(item, next);
-  }
+}
+
+function each(items, cps, done) {
+  const flow = parallel(applyOrFall);
+  flow(items, cps, done);
 }
 
 function raceFindIndex(items, cps, done) {
@@ -100,7 +102,8 @@ function findIndexOps(items, cps, done) {
     var index = slots.findIndex(it => it !== FALSE_OR_ERROR);
     done(null, index);
   }
-  slotsWithResultsParallel(items, cps, complete);
+  const flow = parallel(collectOrMarkError);
+  flow(items, cps, complete);
 }
 
 function findOps(items, cps, done) {
