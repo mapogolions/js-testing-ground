@@ -10,7 +10,7 @@ class Lock {
         return new Promise((resolve, reject) => {
             if (this.state < 0) {
                 this.state = 1;
-                resolve();
+                resolve(true);
                 return;
             }
             const awaiter = { resolve, reject };
@@ -21,17 +21,17 @@ class Lock {
     release() {
         return new Promise((resolve, reject) => {
             if (this.state < 0) {
-                resolve();
+                resolve(false);
                 return;
             }
             if (!this.queue.length) {
                 this.state = -1;
-                resolve();
+                resolve(true);
                 return
             };
             const awaiter = this.queue.shift();
-            awaiter.resolve();
-            resolve();
+            awaiter.resolve(true);
+            resolve(true);
         });
     }
 }
