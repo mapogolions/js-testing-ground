@@ -11,22 +11,24 @@ test('returns an element from pair by index', (t) => {
 });
 
 test('pair index starts with one', (t) => {
-  const error = t.throws(() => Pair('one', 'two')(0), RangeError);
+  const pair = Pair('a', 'b');
+  const error = t.throws(() => pair(0), { instanceOf: RangeError });
   t.is(error.message, 'Pair index out of range');
 });
 
 test('pair index out of range', (t) => {
-  const error = t.throws(() => Pair('a', 'b')(3), RangeError);
+  const pair = Pair('a', 'b');
+  const error = t.throws(() => pair(3), { instanceOf: RangeError });
   t.is(error.message, 'Pair index out of range');
 });
 
 test('missing required arguments', (t) => {
-  const error = t.throws(() => Pair(/* without arguments  */), TypeError);
+  const error = t.throws(() => Pair(/* without arguments */), { instanceOf: TypeError });
   t.is(error.message, 'Missing required positional argument');
 });
 
 test('missing one of the required arguments', (t) => {
-  const error = t.throws(() => Pair('only first'), TypeError);
+  const error = t.throws(() => Pair('only first'), { instanceOf: TypeError });
   t.is(error.message, 'Missing required positional argument');
 });
 
@@ -38,6 +40,7 @@ test('returns an element from tuple by index', (t) => {
 });
 
 test('tuple index out of range', (t) => {
-  const error = t.throws(() => Tuple()(0), RangeError);
+  const tuple = Tuple()
+  const error = t.throws(() => tuple(0), { instanceOf: RangeError });
   t.is(error.message, 'Tuple index out of range');
 });
