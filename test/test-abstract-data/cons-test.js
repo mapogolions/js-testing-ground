@@ -10,7 +10,7 @@ const {
   cadr,
   caddr,
   isPair,
-} = require('../../src/abstract data/cons.js');
+} = require('../../src/abstract-data/cons.js');
 
 
 test('check is pair', (t) => {

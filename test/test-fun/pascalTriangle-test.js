@@ -1,7 +1,7 @@
 'use strict';
 
 const test = require('ava');
-const List = require('../../src/abstract data/fp-list.js');
+const List = require('../../src/abstract-data/fp-list.js');
 const Stream = require('../../src/laziness/fp-stream.js');
 const { pascalTriangle, fastPascalTriangle, pascalList } = require('../../src/fun/pascalTriangle.js');
 

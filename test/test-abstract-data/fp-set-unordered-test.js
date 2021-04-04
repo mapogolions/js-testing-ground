@@ -1,10 +1,10 @@
 'use strict';
 
 const test = require('ava');
-const SetUnordered = require('../../src/abstract data/fp-set-unrodered.js');
+const SetUnordered = require('../../src/abstract-data/fp-set-unrodered.js');
 const pipe = require('../../src/fun/pipe.js');
 const curry = require('../../src/fun/curry.js');
-const { list } = require('../../src/abstract data/cons.js');
+const { list } = require('../../src/abstract-data/cons.js');
 
 
 test("method `SetUnordered.union`", t => {
@@ -14,7 +14,7 @@ test("method `SetUnordered.union`", t => {
     ),
     '()'
   );
-  
+
   t.is(
     SetUnordered.str(
       SetUnordered.union(list(), list('a', 'b'))
@@ -51,7 +51,7 @@ test("method `SetUnordered.intersection`", t => {
     ),
     '()'
   );
-  
+
   t.is(
     SetUnordered.str(
       SetUnordered.intersection(list(), list(1, -1))

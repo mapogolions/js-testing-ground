@@ -1,13 +1,13 @@
 'use strict';
 
-const List = require('../abstract data/fp-list.js');
+const List = require('../abstract-data/fp-list.js');
 const {
   cons,
   nil,
   empty,
   car,
   cdr,
-} = require('../abstract data/cons.js');
+} = require('../abstract-data/cons.js');
 
 
 function of(n) {

@@ -1,7 +1,7 @@
 'use strict';
 
-const List = require('../abstract data/fp-list.js');
-const { cons, nil } = require('../abstract data/cons.js');
+const List = require('../abstract-data/fp-list.js');
+const { cons, nil } = require('../abstract-data/cons.js');
 
 
 const shiftl = xs => List.append(xs, cons(0, nil));

@@ -1,7 +1,7 @@
 'use strict';
 
 const test = require('ava');
-const { Pair, Tuple } = require('../../src/abstract data/pair.js');
+const { Pair, Tuple } = require('../../src/abstract-data/pair.js');
 
 
 test('returns an element from pair by index', (t) => {

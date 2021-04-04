@@ -6,7 +6,7 @@ const {
   car,
   cadr,
   caddr,
-} = require('../abstract data/cons.js');
+} = require('../abstract-data/cons.js');
 
 
 const isNumber = expr => typeof expr === 'number';

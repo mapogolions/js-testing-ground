@@ -1,8 +1,8 @@
 'use strict';
 
 const test = require('ava');
-const Tree = require('../../src/abstract data/fp-tree.js');
-const { list } = require('../../src/abstract data/cons.js');
+const Tree = require('../../src/abstract-data/fp-tree.js');
+const { list } = require('../../src/abstract-data/cons.js');
 const {
   deriv,
   isSum,

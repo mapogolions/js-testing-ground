@@ -2,11 +2,11 @@
 
 const test = require('ava');
 
-const Tree = require('../../src/abstract data/fp-tree.js');
-const List = require('../../src/abstract data/fp-list.js');
+const Tree = require('../../src/abstract-data/fp-tree.js');
+const List = require('../../src/abstract-data/fp-list.js');
 const pipe = require('../../src/fun/pipe.js');
 const curry = require('../../src/fun/curry.js');
-const { cons, list } = require('../../src/abstract data/cons.js');
+const { cons, list } = require('../../src/abstract-data/cons.js');
 
 
 test('Test `Tree.map`', (t) => {

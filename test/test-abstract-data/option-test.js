@@ -1,7 +1,7 @@
 'use strict';
 
 const test = require('ava');
-const { None, Some } = require('../../src/abstract data/option.js');
+const { None, Some } = require('../../src/abstract-data/option.js');
 
 
 test('Test eq', (t) => {

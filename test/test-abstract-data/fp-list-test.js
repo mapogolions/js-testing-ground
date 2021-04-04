@@ -2,8 +2,8 @@
 
 const test = require('ava');
 
-const List = require('../../src/abstract data/fp-list.js');
-const Tree = require('../../src/abstract data/fp-tree.js');
+const List = require('../../src/abstract-data/fp-list.js');
+const Tree = require('../../src/abstract-data/fp-tree.js');
 const pipe = require('../../src/fun/pipe.js');
 const curry = require('../../src/fun/curry.js');
 const {
@@ -13,7 +13,7 @@ const {
   list,
   nil,
   empty,
-} = require('../../src/abstract data/cons.js');
+} = require('../../src/abstract-data/cons.js');
 
 
 test('compress', t => {

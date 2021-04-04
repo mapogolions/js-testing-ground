@@ -4,8 +4,8 @@ const test = require('ava');
 
 const pipe = require('../../src/fun/pipe.js');
 const curry = require('../../src/fun/curry.js');
-const { list, nil } = require('../../src/abstract data/cons.js');
-const List = require('../../src/abstract data/fp-list.js');
+const { list, nil } = require('../../src/abstract-data/cons.js');
+const List = require('../../src/abstract-data/fp-list.js');
 
 
 test("test pipe", t => {
@@ -25,7 +25,7 @@ test("test pipe", t => {
       .value,
     ['a', 'b', 'c', 3]
   );
-  
+
   t.is(
     pipe(list(1, 2, 3, 4, 5))
       ._(curry (List.filter) (x => x % 2 === 0))
