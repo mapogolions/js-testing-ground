@@ -12,6 +12,11 @@
     "immutability",
     "recursive processes"
   ],
+  "ava": {
+    "files": [
+      "!test/test-event-loop-phases/*.js"
+    ]
+  },
   "author": "mapogolions",
   "license": "ISC",
   "devDependencies": {
